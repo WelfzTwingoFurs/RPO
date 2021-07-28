@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/rposong.mp3-bccb8b19b852fbce6f1f87054a381e14.mp3str"
+
+[deps]
+
+source_file="res://media/musica/rposong.mp3"
+dest_files=[ "res://.import/rposong.mp3-bccb8b19b852fbce6f1f87054a381e14.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

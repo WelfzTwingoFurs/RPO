@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/ply_pain.wav-4a12a04b1d565b0fcd7f72f82819c5cb.sample"
+
+[deps]
+
+source_file="res://media/sons/ply_pain.wav"
+dest_files=[ "res://.import/ply_pain.wav-4a12a04b1d565b0fcd7f72f82819c5cb.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0
