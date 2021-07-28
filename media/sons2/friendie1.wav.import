@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/friendie1.wav-743fa3d806a33f5d29c6bdb043f27624.sample"
+
+[deps]
+
+source_file="res://media/sons2/friendie1.wav"
+dest_files=[ "res://.import/friendie1.wav-743fa3d806a33f5d29c6bdb043f27624.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

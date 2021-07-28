@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/little-gun2.wav-4a1f6020b42b66dea27111f803837620.sample"
+
+[deps]
+
+source_file="res://media/sons2/little-gun2.wav"
+dest_files=[ "res://.import/little-gun2.wav-4a1f6020b42b66dea27111f803837620.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/sci_die4.wav-ac7fd3dcaa9b5fa068b43e2ed4d5de3a.sample"
+
+[deps]
+
+source_file="res://media/sons/sci_die4.wav"
+dest_files=[ "res://.import/sci_die4.wav-ac7fd3dcaa9b5fa068b43e2ed4d5de3a.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

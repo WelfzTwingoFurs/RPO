@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/step1.wav-2eab8191f9cfcd1cab7c3e4064cdcf49.sample"
+
+[deps]
+
+source_file="res://media/sons2/step1.wav"
+dest_files=[ "res://.import/step1.wav-2eab8191f9cfcd1cab7c3e4064cdcf49.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0
