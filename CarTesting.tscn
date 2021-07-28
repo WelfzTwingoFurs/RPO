@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://entities/player1.tscn" type="PackedScene" id=4]
+[ext_resource path="res://entities/car.tscn" type="PackedScene" id=5]
+
+[sub_resource type="OpenSimplexNoise" id=1]
+octaves = 1
+period = 0.1
+persistence = 0.0
+lacunarity = 4.0
+
+[sub_resource type="NoiseTexture" id=2]
+flags = 0
+seamless = true
+as_normalmap = true
+bump_strength = 1.2
+noise = SubResource( 1 )
+
+[node name="Node2D" type="Node2D"]
+
+[node name="car" parent="." instance=ExtResource( 5 )]
+position = Vector2( 49.13, 311.309 )
+
+[node name="Sprite" type="Sprite" parent="."]
+modulate = Color( 1, 0.693149, 0.421875, 1 )
+position = Vector2( 6, -9999 )
+scale = Vector2( 100, 100 )
+z_index = -4096
+texture = SubResource( 2 )
+
+[node name="player1" parent="." instance=ExtResource( 4 )]
+position = Vector2( 28, 289 )
