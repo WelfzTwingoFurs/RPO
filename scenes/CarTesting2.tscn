@@ -1,0 +1,110 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://entities/dortor.tscn" type="PackedScene" id=1]
+[ext_resource path="res://entities/recruto.tscn" type="PackedScene" id=2]
+[ext_resource path="res://entities/car.tscn" type="PackedScene" id=3]
+[ext_resource path="res://entities/player1.tscn" type="PackedScene" id=4]
+
+[sub_resource type="OpenSimplexNoise" id=1]
+octaves = 1
+period = 0.1
+persistence = 0.0
+lacunarity = 4.0
+
+[sub_resource type="NoiseTexture" id=2]
+flags = 0
+seamless = true
+as_normalmap = true
+bump_strength = 1.2
+noise = SubResource( 1 )
+
+[sub_resource type="Gradient" id=3]
+colors = PoolColorArray( 0, 1, 0, 1, 0.745462, 0.745462, 0.745462, 1 )
+
+[sub_resource type="GradientTexture" id=4]
+gradient = SubResource( 3 )
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Sprite" type="Sprite" parent="."]
+modulate = Color( 0, 0.670588, 0.0588235, 1 )
+position = Vector2( 1574, -1019 )
+scale = Vector2( 6.76, 6.76 )
+z_index = -4096
+texture = SubResource( 2 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="Sprite2" type="Sprite" parent="Sprite"]
+position = Vector2( -2.10858, 186.857 )
+scale = Vector2( 0.254564, 8.61303 )
+z_index = -4096
+texture = SubResource( 4 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="player1" parent="." instance=ExtResource( 4 )]
+position = Vector2( 2385.64, 394.245 )
+maxX = 2900
+minY = 460
+maxY = 246
+
+[node name="car" parent="." instance=ExtResource( 3 )]
+position = Vector2( 2385.38, 427.063 )
+faceX = -1
+maxX = 2900
+minY = 460
+maxY = 246
+
+[node name="car2" parent="." instance=ExtResource( 3 )]
+position = Vector2( 1580.04, 403.607 )
+maxX = 2900
+minY = 460
+maxY = 246
+
+[node name="car4" parent="." instance=ExtResource( 3 )]
+position = Vector2( 1344.44, 308.724 )
+maxX = 2900
+minY = 460
+maxY = 246
+
+[node name="car5" parent="." instance=ExtResource( 3 )]
+position = Vector2( 1585.41, 251.441 )
+maxX = 2900
+minY = 460
+maxY = 246
+
+[node name="car7" parent="." instance=ExtResource( 3 )]
+position = Vector2( 1826.01, 319.104 )
+maxX = 2900
+minY = 460
+maxY = 246
+
+[node name="recruto" parent="." instance=ExtResource( 2 )]
+position = Vector2( 1578.86, 291.991 )
+maxX = 2900
+minY = 460
+maxY = 246
+
+[node name="recruto2" parent="." instance=ExtResource( 2 )]
+position = Vector2( 2372.15, 580.088 )
+maxX = 2900
+minY = 460
+maxY = 246
+
+[node name="car9" parent="." instance=ExtResource( 3 )]
+position = Vector2( 10.7271, 536.01 )
+faceX = 0
+faceY = -1
+maxX = 2900
+minY = 460
+maxY = 246
+state = 2
+
+[node name="dortor" parent="." instance=ExtResource( 1 )]
+position = Vector2( 1507.91, 285.918 )
+maxX = 2900
+minY = 460
+maxY = 246

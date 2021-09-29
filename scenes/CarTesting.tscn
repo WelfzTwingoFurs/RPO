@@ -1,0 +1,57 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://entities/player1.tscn" type="PackedScene" id=4]
+[ext_resource path="res://entities/car.tscn" type="PackedScene" id=5]
+
+[sub_resource type="OpenSimplexNoise" id=1]
+octaves = 1
+period = 0.1
+persistence = 0.0
+lacunarity = 4.0
+
+[sub_resource type="NoiseTexture" id=2]
+flags = 0
+seamless = true
+as_normalmap = true
+bump_strength = 1.2
+noise = SubResource( 1 )
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Sprite" type="Sprite" parent="."]
+modulate = Color( 0, 0.215686, 0.27451, 1 )
+position = Vector2( 1421.26, -1019 )
+scale = Vector2( 6.16338, 6.76 )
+z_index = -4096
+texture = SubResource( 2 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="player1" parent="." instance=ExtResource( 4 )]
+position = Vector2( 284.474, 377.613 )
+maxX = 2900
+minY = 460
+maxY = -9999
+
+[node name="car10" parent="." instance=ExtResource( 5 )]
+position = Vector2( 1845.6, 371 )
+faceX = 0
+faceY = 1
+maxX = 2900
+minY = 460
+maxY = -9999
+
+[node name="car11" parent="." instance=ExtResource( 5 )]
+position = Vector2( 2010.65, 367.22 )
+faceX = 0
+faceY = -1
+maxX = 2900
+minY = 460
+maxY = -9999
+
+[node name="car12" parent="." instance=ExtResource( 5 )]
+position = Vector2( 265.526, 370.101 )
+maxX = 2900
+minY = 460
+maxY = -9999
