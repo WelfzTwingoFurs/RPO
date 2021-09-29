@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://media/edit/Tiles2.png" type="Texture" id=2]
+[ext_resource path="res://media/tiles/Tiles2.png" type="Texture" id=2]
 
 [sub_resource type="TileSet" id=1]
 49/name = "azulejo"
@@ -858,7 +858,7 @@
 109/shapes = [  ]
 109/z_index = 0
 
-[node name="COL-TILES" type="TileMap"]
+[node name="Tiles1" type="TileMap"]
 tile_set = SubResource( 1 )
 cell_size = Vector2( 29, 29 )
 format = 1
