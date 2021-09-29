@@ -1,6 +1,8 @@
 extends KinematicBody2D
 
-const GRAVITY = 10
+var radar_icon = "player1"
+
+const GRAVITY = 9.5
 var SPEED = 150
 const MAXSPEED = 300
 const JUMP = -26
@@ -9,6 +11,9 @@ onready var Sprite = $Sprite
 onready var Shadow = $Shadow
 onready var AnimationPlayer = $AnimationPlayer
 onready var Debug = $CanvasLayer/Debug
+onready var Audio = $Audio
+onready var Audio2 = $Audio2
+onready var Audio3 = $Audio3
 
 onready var hud_lborder = $CanvasLayer/LBorder
 onready var hud_play1 = $CanvasLayer/LBorder/Player1
@@ -20,13 +25,32 @@ onready var hud_extender = $CanvasLayer/LBorder/Extender
 onready var hud_lifebar = $CanvasLayer/LBorder/Player1/Life1
 onready var hud_ammo1 = $CanvasLayer/LBorder/Player1/Ammo1
 
-onready var input_dirX = 0
-onready var input_dirY = 0
-onready var face_dir = 1
-onready var last_dir = 0
 
-onready var motionZ = 0
-onready var positionZ = 0
+onready var hud_score1 = $CanvasLayer/LBorder/Player1/Score1
+onready var hud_score2 = $CanvasLayer/LBorder/Player2/Score2
+
+onready var hud_money1 = $CanvasLayer/LBorder/Player1/iMoney1
+onready var hud_money2 = $CanvasLayer/LBorder/Player2/iMoney2
+
+onready var hud_cloro1 = $CanvasLayer/LBorder/Player1/iCloro1
+onready var hud_cloro2 = $CanvasLayer/LBorder/Player2/iCloro2
+
+onready var hud_can1 = $CanvasLayer/LBorder/Player1/iCan1
+onready var hud_can2 = $CanvasLayer/LBorder/Player2/iCan2
+
+onready var hud_arrests1 = $CanvasLayer/LBorder/Player1/iArrest1
+#onready var hud_can2 = $CanvasLayer/LBorder/Player2/iCan2
+
+onready var Col2D = $Col2D
+onready var GroundCol = $GroundCol
+
+var input_dirX = 0
+var input_dirY = 0
+var face_dir = 1
+var last_dir = 0
+
+var motionZ = 0
+var positionZ = 0
 
 export var aniframe = 0
 
@@ -35,12 +59,18 @@ export(int) var state = STATES.IDLE
 
 var motion = Vector2()
 
-var minX = 0
-var maxX = 0
-# These will be set in-level, exported to global, then imported to entities.
-var minY = 0
-var maxY = 0
+export var minX = 0
+export var maxX = 0
+# These will be set on startup, and re-adjusted by RayCast2D's in the levels
+export var minY = 0
+export var maxY = 0
 
+var blockX
+var blockY
+var blockZ = 0
+
+export var itembusy = 0
+var vailagga = 0
 
 func _ready():
 	Global.playerX = position.x
@@ -49,24 +79,76 @@ func _ready():
 	
 	AnimationPlayer.playback_speed = 0.8
 	
-	minX = Global.minX
-	maxX = Global.maxX
-	minY = Global.minY
-	maxY = Global.maxY
+#	minX = Global.minX
+#	maxX = Global.maxX
+#	minY = Global.minY
+#	maxY = Global.maxY
 	
 	$Camera2D.limit_left = minX - 25
 	$Camera2D.limit_right = maxX
 	
 	$Camera2D.limit_bottom = minY + 157
 #	$Camera2D.limit_top = -maxY
-	
+
+
+
 
 func change_state(new_state):
+	Sprite.position.x = 0
+	Col2D.scale.y = 1
+	
 	state = new_state
 
 var player
 
+var score = 0
+
+var ammo1 = 99
+var ammo2 = 5
+
+var moneys = 0
+var cloros = 0
+var cans = 0
+var arrests = 0
+
 func _process(delta):
+	# Hud #
+	hud_lifebar.value = health
+	hud_ammo1.text = str(ammo1)#,"\n",ammo2)
+	
+	hud_score1.text = str(score)
+	
+	if itembusy != 0:
+		vailagga = abs(sin(OS.get_system_time_msecs()))
+		
+		hud_score1.set("custom_colors/font_color",Color(1,vailagga,1))
+		
+	else:
+		hud_score1.set("custom_colors/font_color",Color(1,0,1))
+
+
+	if moneys != 0:
+		hud_money1.visible = 1
+		hud_money1.text = str(moneys)
+	if cloros != 0:
+		hud_cloro1.visible = 1
+		hud_cloro1.text = str(cloros)
+	if cans != 0:
+		hud_can1.visible = 1
+		hud_can1.text = str(cans)
+	if arrests != 0:
+		hud_arrests1 .visible = 1
+		hud_arrests1 .text = str(arrests)
+	
+	
+	
+	
+#	if position.y < maxY:
+#		position.y += 1
+#	if position.y > minY:
+#		position.y -= 1
+	
+	
 	match state:
 		STATES.IDLE:
 			idle()
@@ -74,36 +156,51 @@ func _process(delta):
 			pass # take_damage()
 		STATES.DRIVE:
 			driving()
+			
 	
 	motion = move_and_slide(motion, Vector2(0,-1))
 	Shadow.frame = Sprite.frame
 	
 	self.z_index = round(position.y/10)
 	
-	$Col2D.position.y = positionZ + bul_pos/1.5
 	
-	if onfloor == 2:
-		bul_pos = 31
-		$Col2D.scale.y = 0.7
-	elif onfloor == 0:
-		bul_pos = 20
-	else:
-		if !Input.is_action_pressed("ply_sneak"):# Won't work otherwise, no clue
-			bul_pos = 0
-			$Col2D.scale.y = 1
+	if state != 2:
+		$Col2D.position.y = positionZ + bul_pos/1.5
+		
+		if onfloor == 2:
+			bul_pos = 31
+			$Col2D.scale.y = 0.7
+		elif onfloor == 0:
+			bul_pos = 20
+		else:
+			if !Input.is_action_pressed("ply_sneak"):# Won't work otherwise, no clue
+				bul_pos = 0
+				$Col2D.scale.y = 1
 	
 	
 	if Input.is_action_pressed("ply_moveleft"):
+		#if blockX != -1:
 		input_dirX = -1
+		#else:
+		#	input_dirX = 0
 	elif Input.is_action_pressed("ply_moveright"):
+		#if blockX != 1:
 		input_dirX = 1
+		#else:
+		#	input_dirX = 0
 	else:
 		input_dirX = 0
 	
 	if Input.is_action_pressed("ply_moveup"):
+		#if blockY != -1:
 		input_dirY = -1
+		#else:
+		#	input_dirY = 0
 	elif Input.is_action_pressed("ply_movedown"):
+		#if blockY != 1:
 		input_dirY = 1
+		#else:
+		#	input_dirY = 0
 	else:
 		input_dirY = 0
 
@@ -113,15 +210,13 @@ func _process(delta):
 		set_flipped(true)
 	
 	if input_dirX != 0:
-		face_dir = input_dirX
+		if last_dir == 0:
+			face_dir = input_dirX
 	
 	Global.playerX = position.x
 	Global.playerY = position.y
 	
 	
-	# Hud #
-	hud_lifebar.value = health
-	hud_ammo1.text = str(ammo1,"\n",ammo2)
 	
 	
 	
@@ -136,7 +231,7 @@ func _process(delta):
 		"faketimer(",faketimer,"), ammo: I(",ammo1,") II(",ammo2,")\n",
 		"HP: ",health,", Foes: ",Global.foes,", Friends: ",Global.friends,
 		"\nWindow: X(",windowX,") Y(",windowY,"), Zoom:",zoom,"\n Speed:",Engine.time_scale,
-		", FPS:",Engine.get_frames_per_second())
+		", FPS:",Engine.get_frames_per_second(),", itembusy:",itembusy,"\nBlock: x(",blockX,") y(",blockY,") z(",blockZ,")")
 
 	if onfloor == 2:
 		player_speed = lerp(player_speed,(SPEED/1.9),0.10)
@@ -218,17 +313,23 @@ func _physics_process(delta):
 		Global.foes = 0
 	
 	
-	if motionZ < 0:
-		motionZ += 1
-	
-	positionZ += motionZ
-	
-	if positionZ < 0:
-		positionZ += GRAVITY
-	elif positionZ > 0:
-		positionZ = 0
-	else:
-		onfloor = 1
+	if blockZ == 0:
+		if motionZ < 0:
+			motionZ += 1
+		
+		positionZ += motionZ
+		
+		if positionZ < 0:
+			positionZ += GRAVITY
+			
+			if !Input.is_action_pressed("ply_jump"):
+				motionZ += 0.5
+			
+		elif positionZ > 0:
+			positionZ = 0
+			motionZ = 0
+		else:
+			onfloor = 1
 	
 	
 	if faketimer > 0:
@@ -267,14 +368,20 @@ var onfloor
 #var spriteplus = 0 # First bodge so far? nah that was player_speed, but that turned out cooler than before
 var bul_pos = 0  # Here's another bodge, inspired directly by the one above
 
-var ammo1 = 99
-var ammo2 = 5
 var shooting = 0
 var faketimer = 0
 
 const bul_entity = preload("res://entities/bullet.tscn")
 
 
+func die():
+	last_dir = face_dir
+	ouch = 1
+	$Col2D.disabled = 1
+	Sprite.frame = aniframe
+	AnimationPlayer.play("die")
+	motion.x = lerp(motion.x,0,0.005)
+	motion.y = lerp(motion.y,0,0.010)
 
 func shoot():
 	$Audio2.SHOOTs()
@@ -283,16 +390,18 @@ func shoot():
 	bul_instance.who_owner = 0
 	bul_instance.position = position+Vector2((30*face_dir),(48))
 	bul_instance.posZ = (positionZ-67)+bul_pos #positionZ-67-bul_pos
+	
+	bul_instance.maxX = maxX
+	bul_instance.minX = minX
+	bul_instance.maxY = maxY-1
+	bul_instance.minY = minY+65#+49 is correct, but higher makes for better shooting simply
+	
 	get_parent().add_child(bul_instance)
 
 func idle():
 	change_state(STATES.IDLE)
-	if health == 0:
-		$Col2D.disabled = 1
-		Sprite.frame = aniframe
-		AnimationPlayer.play("die")
-		motion.x = 0
-		motion.y = 0
+	if health < 1:
+		die()
 	
 	if ouch == 0:
 		if Input.is_action_pressed("ply_shoot"):
@@ -335,12 +444,12 @@ func idle():
 		# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 		
 		# walking #
-		if input_dirX == -1:
+		if input_dirX == -1 && blockX != -1:
 			if position.x > (minX + 3):
 				motion.x = -player_speed
 			else:
 				motion.x = 0
-		elif input_dirX == 1:
+		elif input_dirX == 1 && blockX != 1:
 			if position.x < (maxX - 27):
 				motion.x = player_speed
 			else:
@@ -348,14 +457,14 @@ func idle():
 		else:
 			motion.x = 0
 		
-		if input_dirY == -1:
+		if input_dirY == -1 && blockY != -1:
 			if position.y > maxY:
 				motion.y = -player_speed
 				#if input_dirX == 0:
 				#	motion.x = 50
 			else:
 				motion.y = 0
-		elif input_dirY == 1:
+		elif input_dirY == 1 && blockY != 1:
 			if position.y < minY:
 				motion.y = player_speed
 				#if input_dirX == 0:
@@ -411,10 +520,56 @@ func idle():
 		# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 var car
+var drivepos = Vector2(0,0)
 
 func driving():
 	change_state(STATES.DRIVE)
+	Shadow.visible = 0
 	position = car.position
+	Sprite.position = drivepos
+	
+	Col2D.scale.y = 0.5
+	Col2D.position.y = -20
+	
+	if health < 1:
+		die()
+		change_state(STATES.IDLE)
+	
+	
+#	if car.state == 0:
+#		change_state(STATES.IDLE)
+	
+	if car.faceX != 0:
+		face_dir = car.faceX
+		
+		if car.faceY == 0:
+			Sprite.frame = 59 # -> sideways
+			if car.faceX == 1:
+				drivepos = Vector2(-6,-50)
+			else:
+				drivepos = Vector2(7,-49)
+		else:
+			if car.faceY == -1:
+				Sprite.frame = 79 # ¨| diag-up
+				if car.faceX == 1:
+					drivepos = Vector2(-7,-55)
+				else:
+					drivepos = Vector2(-31,-53)
+			if car.faceY == 1:
+				Sprite.frame = 69 # _| diag-down
+				if car.faceX == 1:
+					drivepos = Vector2(-1,-55)
+				else:
+					drivepos = Vector2(25,-54)
+		
+	else:
+		face_dir = 1
+		if car.faceY == 1:
+			Sprite.frame = 89 # \/ down
+			drivepos = Vector2(14,-63)
+		else:
+			Sprite.frame = 99 # /\ up
+			drivepos = Vector2(-19,-60)
 
 
 export onready var ouch = 0
@@ -428,10 +583,10 @@ func take_damage(damage):
 	motion.x = 0
 	motion.y = 0
 	AnimationPlayer.play("hurt")
-	if Input.is_action_pressed("ply_sneak"):
-		Sprite.frame = 106
-	else:
+	if !Input.is_action_pressed("ply_sneak") && positionZ == 0:
 		Sprite.frame = 107
+	else:
+		Sprite.frame = 106
 	
 	# Sprite.frame = 107, ouch = 1 for (0.2 AniPlay X1), then ouch = 0
 
@@ -439,14 +594,22 @@ var clorotimer = 0
 
 func take_cloroquina():
 	health -= 3.5
-	player_speed = 50
-	clorotimer = 100
-	$Audio.PAINs()
-	$Audio2.PAINs()
+	$Audio.PAINs()#PAINs()
+	$Audio2.PAINs()#PAINs()
+	
 	if ammo1 == 0:
 		faketimer = 23
 	else:
 		faketimer = 13
+	
+	if player_speed > 51: #If hit multiple times, get slower
+		player_speed /= 2
+		faketimer = round(faketimer*1.5)
+	else:
+		player_speed = 50
+	
+	clorotimer = 100
+	
 #	if Input.is_action_pressed("ply_sneak"):
 #		Sprite.frame = 106
 #		aniframe = 106

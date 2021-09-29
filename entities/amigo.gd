@@ -1,8 +1,8 @@
 extends KinematicBody2D
 
+var radar_icon = "player2"
+
 var motion = Vector2()
-
-
 
 onready var Sprite = $Sprite
 onready var Shadow = $Shadow
@@ -11,15 +11,18 @@ onready var Col2D = $Col2D
 onready var barrelp = $TexProg
 
 
-var minX = 0
-var maxX = 973
-# These will be set in-level, exported to global, then imported to entities.
-var minY = 350
-var maxY = 246
+export var minX = 0
+export var maxX = 0
+# These will be set on startup, and re-adjusted by RayCast2D's in the levels
+export var minY = 0
+export var maxY = 0
 
+var blockX = 0
+var blockY = 0
+var blockZ = 0
+var positionZ = 0
 
-
-enum STATES {IDLE,TIED,DIE}
+enum STATES {IDLE,TIED,DIE,CLORO}
 export(int) var state = STATES.TIED
 
 func change_state(new_state):
@@ -39,7 +42,7 @@ export var ready = 0
 var playerX = 0
 var playerY = 0
 
-var face_dir
+var face_dir = 1
 
 func _process(delta):
 	match state:
@@ -49,11 +52,13 @@ func _process(delta):
 			tied()
 		STATES.DIE:
 			die()
+		STATES.CLORO:
+			take_cloroquina()
 	
 	motion = move_and_slide(motion, Vector2(0,-1))
 	Shadow.frame = Sprite.frame
 	
-	self.z_index = (position.y/10)-1
+	self.z_index = round(position.y/10)-1
 	
 	
 	if face_dir == 1:
@@ -61,8 +66,9 @@ func _process(delta):
 	elif face_dir == -1:
 		set_flipped(true)
 	
-	foes = Global.foes
-	friends = Global.friends
+	if Global.foes > 1:
+		foes = Global.foes
+		friends = Global.friends
 	
 	playerX = position.x - Global.player.position.x
 	playerY = position.y - Global.player.position.y
@@ -88,6 +94,7 @@ func tied():
 		initialoffset = Global.friends
 		AniPlay.playback_speed = 0.8
 		barrelp.queue_free()
+		Global.player.score += 200
 		change_state(STATES.IDLE)
 	elif helptrigger == -1 && AniPlay.playback_speed == -1:
 		AniPlay.playback_speed = 1
@@ -182,11 +189,34 @@ func take_damage(damage):
 	motion.y = 0
 	change_state(STATES.DIE)
 
+func take_cloroquina():
+	change_state(STATES.CLORO)
+	motion.x = 0
+	motion.y = 0
+	AniPlay.play("transform")
+
 func die():
 	AniPlay.play("die")
 
 func SAFEDIE():
 	Global.friends -= 1
+	queue_free()
+
+
+
+func transformation():
+	Global.friends -= 1
+	var whotospawn = preload("res://entities/recruto.tscn")
+	var bul_instance = whotospawn.instance()
+	bul_instance.position = Vector2(position.x,position.y)
+	bul_instance.type = 1
+	
+	bul_instance.minX = minX
+	bul_instance.maxX = maxX
+	bul_instance.minY = minY
+	bul_instance.maxY = maxY
+	
+	get_parent().add_child(bul_instance)
 	queue_free()
 
 func set_flipped(flipstate):

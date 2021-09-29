@@ -51,8 +51,9 @@ func _physics_process(delta):
 			body.take_cloroquina()
 			queue_free()
 		elif body.is_in_group("amigo"):
-			var damage
-			body.take_damage(damage)
+			#var damage
+			body.take_cloroquina()#take_damage(damage)
+			queue_free()
 
 var damagearray = []
 var bodyY

@@ -86,3 +86,40 @@ func FRIENDIEs():
 	if which == 1:
 		set_stream(FRIENDIE2)
 	play()
+
+const CARENGINE1 = preload("res://media/carros/SedanEngine.wav")
+func car_engine():
+	set_stream(CARENGINE1)
+	if !is_playing():
+		play()
+
+const TIRESQUEAK = preload("res://media/carros/Tire.wav")
+func car_tire():
+	set_stream(TIRESQUEAK)
+	if !is_playing():
+		play()
+
+const CARHIT = preload("res://media/sons2/big-gun.wav")#Damage3.wav")
+func car_ouch():
+	set_stream(CARHIT)
+	play()
+
+const ITEM_AMMO1 = preload("res://media/sons2/item2-ammo.wav")
+func ammo1get():
+	set_stream(ITEM_AMMO1)
+	play()
+
+const ITEM_MONEY = preload("res://media/sons2/item2-money.wav")
+func moneyget():
+	set_stream(ITEM_MONEY)
+	play()
+
+const ITEM_CLORO = preload("res://media/sons2/tingtingting.wav")
+func cloroget():
+	set_stream(ITEM_CLORO)
+	play()
+
+const ITEM_CAN = preload("res://media/sons2/booboop.wav")
+func canget():
+	set_stream(ITEM_CAN)
+	play()

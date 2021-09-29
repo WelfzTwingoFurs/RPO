@@ -1,5 +1,7 @@
 extends KinematicBody2D
 
+var radar_icon = "dortor"
+
 var motion = Vector2()
 var speed = 130
 
@@ -12,32 +14,51 @@ onready var Audio = $Audio
 enum STATES {IDLE,DOORSPAWN,ENGAGE,SHOOTING,OUCH,GIVEUP}
 export(int) var state = STATES.DOORSPAWN
 
-var minX = 0
-var maxX = 973
-# These will be set in-level, exported to global, then imported to entities.
-var minY = 350
-var maxY = 246
+export var minX = 0
+export var maxX = 0
+# These will be set on startup, and re-adjusted by RayCast2D's in the levels
+export var minY = 0
+export var maxY = 0
 
+var blockX = 0
+var blockY = 0
 
 const BUL_ENTITY = preload("res://entities/bullet-dortor.tscn")
 
 func change_state(new_state):
 	state = new_state
 
+const alt1 = preload("res://media/dortorI.png")
+const alt2 = preload("res://media/dortorII.png")
+const alt3 = preload("res://media/dortorIII.png")
+
+var type
+
 func _ready():
+	type = randi() % 3
+#	print(type)
+	if type == 0:
+#		AniPlay.playback_speed = 0.75 #normal
+		Sprite.texture = alt1
+	elif type == 1:
+#		AniPlay.playback_speed = 0.6 #ducker
+		Sprite.texture = alt2
+#		speed = 75
+#		howmany += 10
+	elif type == 2:
+#		AniPlay.playback_speed = 0.9 #smart
+		Sprite.texture = alt3
+#		speed = 125
+#		howmany *= 5
+	
 	timerstep = (randi() % 7)
 	
 	Global.foes += 1
 	
 	howmany = Global.foes
 	
-	if howmany < 1:
+	if howmany == 0:
 		howmany = 1
-	
-	minX = Global.minX
-	maxX = Global.maxX
-	minY = Global.minY
-	maxY = Global.maxY
 	
 	Col2D.disabled = 0
 
@@ -57,6 +78,7 @@ func _physics_process(delta):
 func _process(delta):
 	match state:
 		STATES.IDLE:
+			walkdown = 0
 			idle()
 		STATES.DOORSPAWN:
 			doorspawn()
@@ -72,46 +94,67 @@ func _process(delta):
 	
 	Shadow.frame = Sprite.frame
 	
-#	if position.y < maxY:
-#		change_state(STATES.DOORSPAWN)
-	
 	if face_dir == 1:
 		set_flipped(false)
 	elif face_dir == -1:
 		set_flipped(true)
 	
+	
+	
+	system_msecs = OS.get_system_time_msecs()
+	
+	if state != 1:# && walkdown == 0:
+		if position.y < maxY:
+			position.y += 1
+		
+		elif position.y > minY:
+			position.y -= 1
+		
+#		if position.x > maxX:
+#			position.x += maxX-position.x
+#		elif position.x < minX:
+#			position.x += minX-position.x
+		
+		self.z_index = round(position.y/10)-1
+#	else:
+#		if position.y < maxY:
+#			doorspawn()
+
+	if state == 0 && chasehq == 0: #If in idle, delay notice
+		
+		if ((howmany*2)*1000) % 10000 == 0: #I forgot what the fuck this does
+			howmany = (howmany/10) + 1 
+		#if abs(playerX) < sight
+		var Xtest = position.x - Global.playerX
+		if Xtest > 200:
+			if (system_msecs % ((howmany*2)*1000)) == 0:# every 'howmany'*2 seconds
+				playerX = position.x - Global.playerX #This works half-well, number may be to high and make way too long to notice
+				playerY = position.y - Global.playerY #so I made it also update the position if the player is simply too close
+		else:
+			playerX = position.x - Global.playerX
+			playerY = position.y - Global.playerY
+			
+	else: #Else, don't, or they'll be unpredicable to surrender
+		if (system_msecs % 200) == 0:# 500 works bad, should be half-a-sec, but Godot sometimes skips milliseconds
+			playerX = position.x - Global.playerX
+			playerY = position.y - Global.playerY
+			
+	
+	
 #	$Debug.text = str("wasfaketimer:",wasfaketimer,"\nfaketimer:",faketimer,"\nstate:",state,
-#	"\nplayerX:",round(playerX),", playerY:",round(playerY),"\nwasplyY:",wasplyY,"\ngiveupvar:",giveupvar)
+#	"\nplayerX:",round(playerX),", playerY:",round(playerY),"\nwasplyY:",wasplyY,"\ngiveupvar:",giveupvar,
+#	"\nhowmany:",howmany," check:",((howmany*2)*1000))
 	
-	if position.y > minY: #460
-		position.y += minY-position.y
-	elif position.y < maxY: ##246
-		position.y += maxY-position.y
-	
-	if position.x > maxX: ##2900
-		position.x += maxX-position.x
-	elif position.x < minX: #0
-		position.x += minX-position.x
-	
-	self.z_index = round(position.y/10)-1
-	
-#	var systemseconds = OS.get_system_time_secs()
-	var systemmseconds = OS.get_system_time_msecs()
-	
-	if state == 1:
-		if (systemmseconds % 100000 == 0):#every 20 seconds? if 1000 is 1 second
-			playerX = position.x - Global.playerX
-			playerY = position.y - Global.playerY
-	else:
-		if (systemmseconds % 10 == 0):#every half-second
-			playerX = position.x - Global.playerX
-			playerY = position.y - Global.playerY
 	
 	if state != 4:
 		if abs(playerX) < 45 && abs(playerY) < 15 && giveupvar != 4: ## beginning ##
 			giveupvar = 2
 			AniPlay.play("giveup")
 			change_state(STATES.GIVEUP)
+
+var walkdown = 1
+
+var system_msecs
 
 var faketimer = 1
 var timerstep = 1
@@ -131,6 +174,8 @@ var sight = 0
 
 var wasplyY = 1
 
+var chasehq = 0
+
 func idle():
 	motion.x = 0
 	if abs(playerX) < sight:
@@ -138,12 +183,21 @@ func idle():
 		timerstep = (randi() % 7) #between 0 and 6
 		faketimer = timervalues[timerstep]
 		wasfaketimer = faketimer
+		chasehq = 0
 		change_state(STATES.ENGAGE)
 	else:
-		if (timerstep % 2 == 0):
-			AniPlay.play("idle2")
+		if sign(playerX) == -1: #If the player is to the right, chase them
+			AniPlay.play("walk")
+			chasehq = 1
+			face_dir = 1
+			if blockX != face_dir:
+				motion.x = (speed*face_dir)*1.5#face_dir)*1.5
 		else:
-			AniPlay.play("taunt")
+			chasehq = 0
+			if (timerstep % 2 == 0): #Else, idle
+				AniPlay.play("idle2")
+			else:
+				AniPlay.play("taunt")
 
 func engage():
 	if abs(playerX) > sight-howmany:
@@ -151,18 +205,28 @@ func engage():
 		change_state(STATES.IDLE)
 	
 	if abs(motion.x) > 1 or abs(motion.y) > 1: # Walking animation #
+		#if walkdown == 1:
+		#	AniPlay.play("walkdown")
+		#else:
 		AniPlay.play("walkback")
 	else:
 		AniPlay.play("gonnashoot")
 	face_dir = -sign(playerX)
 	
 	if faketimer < (wasfaketimer/1.5):
-		motion.x = speed*-face_dir
-		#motion.x = lerp(motion.x,speed,0.1)*-face_dir
+		if blockX != face_dir:
+			motion.x = speed*-face_dir
+		else:
+			motion.x = 0
+			#motion.x = lerp(motion.x,speed,0.1)*-face_dir
 		
 		
 		if abs(playerY) < 25+howmany:
-			motion.y = speed*sign(playerY)
+			if blockY != -(sign(playerY)):
+				motion.y = speed*sign(playerY)
+			else:
+				motion.y = 0
+			
 			#motion.y = lerp(0,speed,0.5)*sign(wasplyY)
 		#else:
 		#	motion.y = 0
@@ -195,16 +259,23 @@ func surrender():
 
 	elif giveupvar == 4: ## surrender complete ##
 		#Col2D.disabled = 1
+		#remove_radar()
 		AniPlay.play("giveupover")
 
 #lerp(from: Variant, to: Variant, weight: float)
 
+func remove_radar():
+	self.remove_from_group('radar_me')
+
 func doorspawn():
+	walkdown = 1
 	AniPlay.play("walkdown")
 	motion.y = speed
 	if position.y > maxY:
 		motion.y = 0
 		sight = get_viewport().size.x-(Global.resolution*70)
+		walkdown = 0
+		
 		change_state(STATES.IDLE)
 
 func shooting():
@@ -264,6 +335,13 @@ func take_damage(damage):
 func SAFEDIE():
 	Global.foes -= 1
 	queue_free()
+
+func giveupScore():
+	Global.player.score += 2000
+	Global.player.arrests += 1
+
+func dropitem():
+	pass
 
 func set_flipped(flipstate):
 	if flipstate: ### LEFT ### -1
