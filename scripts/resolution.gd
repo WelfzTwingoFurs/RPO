@@ -78,10 +78,13 @@ func _process(delta):
 			step = 0
 		
 		if Input.is_action_just_pressed("bug_cheat"):
-			player.health *= 9
+			player.health = (player.health+1) *9
 			player.ammo1 = 999
+			player.state = 0
 			if player.ouch == 1:
 				player.ouch = 0
+				player.last_dir = 0
+				player.Col2D.disabled = 0
 		
 		if Input.is_action_just_pressed("bug_reset"): #5
 			foes = 0
@@ -108,7 +111,9 @@ func _process(delta):
 		
 		elif Input.is_action_just_pressed("bug_speedup"):
 			Engine.time_scale += 0.2
-
+		
+		elif Input.is_action_just_pressed("bug_speedres"):
+			Engine.time_scale = 1
 	
 	
 	
