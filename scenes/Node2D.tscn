@@ -121,9 +121,19 @@ position = Vector2( 89, 439 )
 maxX = 2900
 minY = 460
 maxY = 246
+lane1 = 374
+lane2 = 430
+holster = -1
+spawn_on = 1
 
 [node name="recruto" parent="." instance=ExtResource( 2 )]
 position = Vector2( 570.309, 272.453 )
+maxX = 2900
+minY = 460
+maxY = 246
+
+[node name="dortor" parent="." instance=ExtResource( 1 )]
+position = Vector2( 651.255, 302.403 )
 maxX = 2900
 minY = 460
 maxY = 246
@@ -143,12 +153,6 @@ position = Vector2( 77.977, 425.248 )
 [node name="car" parent="." instance=ExtResource( 5 )]
 position = Vector2( 1519.82, 268.207 )
 faceY = 1
-maxX = 2900
-minY = 460
-maxY = 246
-
-[node name="dortor" parent="." instance=ExtResource( 1 )]
-position = Vector2( 674.677, 343.623 )
 maxX = 2900
 minY = 460
 maxY = 246
@@ -222,8 +226,9 @@ maxY = 246
 [node name="door4" parent="." instance=ExtResource( 8 )]
 position = Vector2( 599, 261 )
 timer = 250
-rate = 100
-ammo = 4
+rate = 1000
+ammo = -1
+who = 3
 maxX = 2900
 minY = 460
 maxY = 246

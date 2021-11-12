@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=19 format=2]
 
 [ext_resource path="res://entities/amigo.tscn" type="PackedScene" id=1]
 [ext_resource path="res://media/recruto7.png" type="Texture" id=2]
@@ -12,10 +12,11 @@
 [ext_resource path="res://media/fonts/score-fonts.fnt" type="BitmapFont" id=10]
 [ext_resource path="res://AnimationPlayer.gd" type="Script" id=11]
 [ext_resource path="res://media/recruto5.png" type="Texture" id=12]
-[ext_resource path="res://media/dortorIII.png" type="Texture" id=13]
-[ext_resource path="res://media/dortorII.png" type="Texture" id=14]
+[ext_resource path="res://media/dortor-defaultish.png" type="Texture" id=13]
+[ext_resource path="res://media/dortor-havan2.png" type="Texture" id=14]
 [ext_resource path="res://media/player_aspone.png" type="Texture" id=15]
 [ext_resource path="res://media/player_vasp.png" type="Texture" id=16]
+[ext_resource path="res://media/NPCB-hobo.png" type="Texture" id=17]
 
 [sub_resource type="Animation" id=1]
 length = 0.6
@@ -143,7 +144,7 @@ position = Vector2( 372.251, 184.415 )
 texture = ExtResource( 15 )
 hframes = 10
 vframes = 12
-frame = 6
+frame = 1
 
 [node name="Sprite2" type="Sprite" parent="AnimationPlayer"]
 position = Vector2( 468.144, 184.471 )
@@ -168,20 +169,41 @@ frame = 4
 
 [node name="Sprite5" type="Sprite" parent="AnimationPlayer"]
 position = Vector2( 564.251, 184.415 )
-texture = ExtResource( 14 )
+texture = ExtResource( 13 )
 hframes = 10
 vframes = 8
 frame = 1
 
 [node name="Sprite6" type="Sprite" parent="AnimationPlayer"]
 position = Vector2( 564.251, 280.471 )
-texture = ExtResource( 13 )
+texture = ExtResource( 14 )
 hframes = 10
 vframes = 8
 frame = 1
 
+[node name="Sprite8" type="Sprite" parent="AnimationPlayer"]
+position = Vector2( 660.251, 184.415 )
+texture = ExtResource( 17 )
+hframes = 10
+vframes = 10
+frame = 1
+
+[node name="Sprite9" type="Sprite" parent="AnimationPlayer"]
+position = Vector2( 660, 280.471 )
+texture = ExtResource( 17 )
+hframes = 10
+vframes = 10
+frame = 1
+
+[node name="Sprite10" type="Sprite" parent="AnimationPlayer"]
+position = Vector2( 660, 375 )
+texture = ExtResource( 17 )
+hframes = 10
+vframes = 10
+frame = 1
+
 [node name="Sprite7" type="Sprite" parent="AnimationPlayer"]
-position = Vector2( 1285.25, 271.471 )
+position = Vector2( 669.851, 79.1481 )
 texture = ExtResource( 4 )
 vframes = 7
 frame = 1

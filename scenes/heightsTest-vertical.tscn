@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://tiles/Tiles2.tscn" type="PackedScene" id=1]
 [ext_resource path="res://entities/player1.tscn" type="PackedScene" id=2]
@@ -8,6 +8,8 @@
 [ext_resource path="res://entities/dortor.tscn" type="PackedScene" id=6]
 [ext_resource path="res://entities/amigo.tscn" type="PackedScene" id=7]
 [ext_resource path="res://entities/car.tscn" type="PackedScene" id=8]
+[ext_resource path="res://entities/NPC-B.tscn" type="PackedScene" id=9]
+[ext_resource path="res://entities/zombie.tscn" type="PackedScene" id=10]
 
 [node name="heights" type="Node2D"]
 
@@ -88,7 +90,19 @@ maxY = 246
 position = Vector2( 403, 120 )
 
 [node name="car" parent="." instance=ExtResource( 8 )]
-position = Vector2( 206, 370 )
+position = Vector2( 143, 328 )
+maxX = 2900
+minY = 460
+maxY = 246
+
+[node name="NPC-B" parent="." instance=ExtResource( 9 )]
+position = Vector2( 700, 410 )
+maxX = 2900
+minY = 460
+maxY = 246
+
+[node name="zombie" parent="." instance=ExtResource( 10 )]
+position = Vector2( 749, 413 )
 maxX = 2900
 minY = 460
 maxY = 246

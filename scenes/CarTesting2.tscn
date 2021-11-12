@@ -36,9 +36,9 @@ __meta__ = {
 "_edit_group_": true
 }
 
-[node name="Sprite2" type="Sprite" parent="Sprite"]
-position = Vector2( -2.10858, 186.857 )
-scale = Vector2( 0.254564, 8.61303 )
+[node name="Sprite2" type="Sprite" parent="."]
+position = Vector2( 1559.75, 244.153 )
+scale = Vector2( 1.72085, 58.2241 )
 z_index = -4096
 texture = SubResource( 4 )
 __meta__ = {
@@ -96,8 +96,6 @@ maxY = 246
 
 [node name="car9" parent="." instance=ExtResource( 3 )]
 position = Vector2( 10.7271, 536.01 )
-faceX = 0
-faceY = -1
 maxX = 2900
 minY = 460
 maxY = 246

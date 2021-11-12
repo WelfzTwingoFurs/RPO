@@ -1,0 +1,323 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://icon64-trans.png" type="Texture" id=1]
+[ext_resource path="res://boot.png" type="Texture" id=2]
+[ext_resource path="res://entities/debugCamera2D.gd" type="Script" id=4]
+[ext_resource path="res://media/fonts/abc-fonts.fnt" type="BitmapFont" id=5]
+[ext_resource path="res://scripts/Button-levelselect.gd" type="Script" id=6]
+[ext_resource path="res://scripts/fakeplayer.gd" type="Script" id=7]
+[ext_resource path="res://scripts/Label-Shine.gd" type="Script" id=8]
+[ext_resource path="res://scripts/Button-levelselect-drawline.gd" type="Script" id=9]
+[ext_resource path="res://scripts/musica.gd" type="Script" id=10]
+[ext_resource path="res://media/sons2/booboop.wav" type="AudioStream" id=11]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0, 0, 0, 0.411765 )
+corner_detail = 1
+
+[sub_resource type="Gradient" id=2]
+offsets = PoolRealArray( 0 )
+colors = PoolColorArray( 0.0784314, 0.0784314, 0.117647, 1 )
+
+[sub_resource type="GradientTexture" id=3]
+gradient = SubResource( 2 )
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Instructions" type="Label" parent="."]
+margin_left = 176.32
+margin_top = -197.498
+margin_right = 499.32
+margin_bottom = -81.4976
+custom_styles/normal = SubResource( 1 )
+text = "Control: WASD, up&right Arrows, Shift (either), Alt
+-- Approach enemies to surrender them! --
+
+Resolution: F1=/2, F2=*2, F3=re-adjust, [+-]=zoom
+-=|:.  D e b u g g i n g  .:|=-
+F4=cheat, F5=reset, F9=slower, F10= faster,
+F11= regular speed"
+align = 1
+valign = 3
+script = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+shinetype = 3
+
+[node name="musica" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 11 )
+autoplay = true
+script = ExtResource( 10 )
+
+[node name="song" type="Label" parent="musica"]
+margin_left = 176.0
+margin_top = -74.0
+margin_right = 499.0
+margin_bottom = -58.0
+custom_styles/normal = SubResource( 1 )
+text = "[M] for song-test!"
+align = 1
+valign = 1
+script = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+shinetype = 1
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 52, 0 )
+z_index = -2
+current = true
+script = ExtResource( 4 )
+speed = 1.0
+
+[node name="icon" type="Sprite" parent="Camera2D"]
+position = Vector2( 0, -87 )
+texture = ExtResource( 1 )
+
+[node name="boot" type="Sprite" parent="Camera2D"]
+modulate = Color( 0, 0, 1, 0.498039 )
+texture = ExtResource( 2 )
+
+[node name="Label" type="Label" parent="Camera2D"]
+margin_left = -110.0
+margin_top = -129.0
+margin_right = 105.0
+margin_bottom = 39.0
+custom_fonts/font = ExtResource( 5 )
+text = "welcome to
+
+
+
+click the icons to select,
+use -wasd- to move, if 
+they are off-screen
+
+-esc- returns you here"
+align = 1
+script = ExtResource( 8 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+shinetype = 2
+
+[node name="Sprite" type="Sprite" parent="Camera2D"]
+position = Vector2( 4.48984, 10024.8 )
+scale = Vector2( 99999, 99999 )
+z_index = -999
+texture = SubResource( 3 )
+
+[node name="Position2D" type="Position2D" parent="Camera2D"]
+script = ExtResource( 7 )
+
+[node name="butt" type="Node2D" parent="."]
+position = Vector2( -197.808, -197.808 )
+script = ExtResource( 9 )
+
+[node name="Button" type="Button" parent="butt"]
+margin_right = 64.0
+margin_bottom = 20.0
+text = "Node2D"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scene = "res://scenes/Node2D.tscn"
+
+[node name="butt2" type="Node2D" parent="."]
+position = Vector2( -197.808, -197.808 )
+
+[node name="Button" type="Button" parent="butt2"]
+margin_top = 21.0
+margin_right = 47.0
+margin_bottom = 41.0
+text = "Fonts"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scene = "res://scenes/Fonts.tscn"
+
+[node name="butt3" type="Node2D" parent="."]
+position = Vector2( -197.808, -197.808 )
+
+[node name="Button" type="Button" parent="butt3"]
+margin_top = 42.0
+margin_right = 64.0
+margin_bottom = 62.0
+text = "dortorzoner"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scene = "res://scenes/dortorzoner.tscn"
+
+[node name="butt4" type="Node2D" parent="."]
+position = Vector2( -197.808, -176.808 )
+
+[node name="Button" type="Button" parent="butt4"]
+margin_top = 42.0
+margin_right = 64.0
+margin_bottom = 62.0
+text = "CarTesting"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scene = "res://scenes/CarTesting.tscn"
+
+[node name="butt5" type="Node2D" parent="."]
+position = Vector2( -197.808, -155.808 )
+
+[node name="Button" type="Button" parent="butt5"]
+margin_top = 42.0
+margin_right = 64.0
+margin_bottom = 62.0
+text = "BarbeirosPutos"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scene = "res://scenes/BarbeirosPutos.tscn"
+
+[node name="butt6" type="Node2D" parent="."]
+position = Vector2( -197.808, -134.808 )
+
+[node name="Button" type="Button" parent="butt6"]
+margin_top = 42.0
+margin_right = 86.0
+margin_bottom = 62.0
+text = "CarTesting2"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scene = "res://scenes/CarTesting2.tscn"
+
+[node name="butt7" type="Node2D" parent="."]
+position = Vector2( -197.808, -134.808 )
+
+[node name="Button" type="Button" parent="butt7"]
+margin_top = 42.0
+margin_right = 89.0
+margin_bottom = 62.0
+text = "ItemTesting"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scene = "res://scenes/ItemTesting.tscn"
+
+[node name="butt8" type="Node2D" parent="."]
+position = Vector2( -197.808, -113.808 )
+
+[node name="Button" type="Button" parent="butt8"]
+margin_top = 42.0
+margin_right = 75.0
+margin_bottom = 62.0
+text = "Tiles2test"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scene = "res://scenes/Tiles2test.tscn"
+
+[node name="butt9" type="Node2D" parent="."]
+position = Vector2( -197.808, -92.8076 )
+
+[node name="Button" type="Button" parent="butt9"]
+margin_top = 42.0
+margin_right = 75.0
+margin_bottom = 62.0
+text = "heightsTest-vertical"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scene = "res://scenes/heightsTest-vertical.tscn"
+
+[node name="butt10" type="Node2D" parent="."]
+position = Vector2( -197.808, -71.8076 )
+
+[node name="Button" type="Button" parent="butt10"]
+margin_top = 42.0
+margin_right = 83.0
+margin_bottom = 62.0
+text = "Tiles2test2"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scene = "res://scenes/Tiles2test2.tscn"
+
+[node name="butt11" type="Node2D" parent="."]
+position = Vector2( -197.808, -50.8076 )
+
+[node name="Button" type="Button" parent="butt11"]
+margin_top = 42.0
+margin_right = 102.0
+margin_bottom = 62.0
+text = "Interactions-1"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scene = "res://scenes/Interactions-1.tscn"
+
+[node name="butt12" type="Node2D" parent="."]
+position = Vector2( -197.808, -29.8076 )
+
+[node name="Button" type="Button" parent="butt12"]
+margin_top = 42.0
+margin_right = 55.0
+margin_bottom = 62.0
+text = "zumbs"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scene = "res://scenes/zumbs.tscn"
+
+[node name="butt13" type="Node2D" parent="."]
+position = Vector2( -197.808, -8.8076 )
+
+[node name="Button" type="Button" parent="butt13"]
+margin_top = 42.0
+margin_right = 87.0
+margin_bottom = 62.0
+text = "level-select"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scene = "res://scenes/level-select.tscn"
+
+[node name="butt14" type="Node2D" parent="."]
+position = Vector2( -197.808, 12.1924 )
+
+[node name="Button" type="Button" parent="butt14"]
+margin_top = 42.0
+margin_right = 87.0
+margin_bottom = 62.0
+text = "just-outta-sight-spawning"
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+scene = "res://scenes/just-outta-sight-spawning.tscn"
+
+[connection signal="pressed" from="butt/Button" to="butt/Button" method="_on_Button_pressed"]
+[connection signal="pressed" from="butt2/Button" to="butt2/Button" method="_on_Button_pressed"]
+[connection signal="pressed" from="butt3/Button" to="butt3/Button" method="_on_Button_pressed"]
+[connection signal="pressed" from="butt4/Button" to="butt4/Button" method="_on_Button_pressed"]
+[connection signal="pressed" from="butt5/Button" to="butt5/Button" method="_on_Button_pressed"]
+[connection signal="pressed" from="butt6/Button" to="butt6/Button" method="_on_Button_pressed"]
+[connection signal="pressed" from="butt7/Button" to="butt7/Button" method="_on_Button_pressed"]
+[connection signal="pressed" from="butt8/Button" to="butt8/Button" method="_on_Button_pressed"]
+[connection signal="pressed" from="butt9/Button" to="butt9/Button" method="_on_Button_pressed"]
+[connection signal="pressed" from="butt10/Button" to="butt10/Button" method="_on_Button_pressed"]
+[connection signal="pressed" from="butt11/Button" to="butt11/Button" method="_on_Button_pressed"]
+[connection signal="pressed" from="butt12/Button" to="butt12/Button" method="_on_Button_pressed"]
+[connection signal="pressed" from="butt13/Button" to="butt13/Button" method="_on_Button_pressed"]
+[connection signal="pressed" from="butt14/Button" to="butt14/Button" method="_on_Button_pressed"]

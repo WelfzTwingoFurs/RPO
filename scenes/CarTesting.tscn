@@ -33,6 +33,7 @@ position = Vector2( 284.474, 377.613 )
 maxX = 2900
 minY = 460
 maxY = -9999
+holster = -1
 
 [node name="car10" parent="." instance=ExtResource( 5 )]
 position = Vector2( 1845.6, 371 )
