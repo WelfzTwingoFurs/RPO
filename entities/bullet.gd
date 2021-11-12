@@ -20,7 +20,11 @@ export var maxY = -9999
 const alt1 = preload("res://media/bullet2.png")
 const alt2 = preload("res://media/bullet3.png")
 
+var sight = 9999
+
 func _ready():
+	sight = abs(get_viewport().size.x)/2
+	
 	if who_owner == 1:
 		$Sprite.texture = alt2
 	#	$Shadow.texture = alt2
@@ -35,6 +39,17 @@ func _ready():
 	bullshit2D.minY = minY
 	bullshit2D.maxY = maxY
 	bullshit2D.direction = direction
+	
+	if Global.interest_type < 2:
+		Global.point_of_interest = Vector2(position.x,position.y-posZ) 
+		Global.interest_type = 1
+		my_point = position.x
+		my_point_secs = OS.get_system_time_secs()
+
+var my_point = 0
+var my_point_secs = 0
+
+var system_secs
 
 var colR = 0
 var colG = 0
@@ -45,7 +60,13 @@ var meganumbers
 
 var playerY
 
-func _process(delta):
+func _process(_delta):
+	system_secs = OS.get_system_time_secs()
+	
+	if my_point == Global.point_of_interest.x:
+		if system_secs > my_point_secs:
+			Global.interest_type = 0
+	
 	minX = bullshit2D.minX
 	maxX = bullshit2D.maxX
 	minY = bullshit2D.minY
@@ -54,14 +75,12 @@ func _process(delta):
 #	print(round(position.y))
 #	print(minY,"v ^",maxY)
 	
-	if position.y < maxY:
-		queue_free()
-		
-	if position.y > minY:
-		queue_free()
+	
+	
+	
 	
 	supernumbers = sin((OS.get_system_time_msecs() / 50 ))
-	meganumbers = sin(OS.get_system_time_secs())
+	meganumbers = sin(system_secs)
 	
 	colR = abs(supernumbers)
 	colG = abs(supernumbers + meganumbers)
@@ -75,17 +94,29 @@ func _process(delta):
 	self.z_index = round(position.y/10)#+posZ
 	
 	if position.x < minX-45:
-		queue_free()
+		queue_freedom()
 	elif position.x > maxX+45:
-		queue_free()
+		queue_freedom()
 	
 	
+	if who_owner == 0:
+		if Global.player.position.x < (minX-45) + sight:
+			if position.x > minX + (sight*2):
+				queue_freedom()
+		
+		elif Global.player.position.x > (maxX+45) - sight:
+			if position.x < maxX - (sight*2):
+				queue_freedom()
+		
+		else:
+			if abs(Global.player.position.x - position.x) > sight:
+				queue_freedom()
 	
 
 
 	for body in damagearray:
 		body.take_damage(damage)
-		queue_free()
+		queue_freedom()
 		
 		# play blood effect and queue_Free
 
@@ -100,6 +131,11 @@ var damagearray = []
 var bodyY
 
 func _on_Area2D_body_entered(body):
+	if body.is_in_group("npcb"):
+		body.fear = 1
+		body.npc_scream()
+	
+	
 	
 	if who_owner == 0: # player shot
 		if body.is_in_group("enemy"):
@@ -107,7 +143,15 @@ func _on_Area2D_body_entered(body):
 #			if bodyY > 25:
 			if bodyY < 76:
 				body.take_damage(damage)
-				queue_free()
+				
+				if !body.is_in_group("zombie"):
+					queue_freedom()
+				else:
+					if body.dortor_dad != null:
+						pass
+						Global.player.score += 9500
+					else:
+						queue_freedom()
 				
 				Global.player.score += 500
 #				if !damagearray.has(body):
@@ -120,7 +164,7 @@ func _on_Area2D_body_entered(body):
 				if bodyY > 35:
 					if bodyY < 69:
 						body.take_damage(damage)
-						queue_free()
+						queue_freedom()
 	#					if !damagearray.has(body):
 	#						damagearray.push_back(body)
 
@@ -129,6 +173,10 @@ func _on_Area2D_body_exited(body):
 		damagearray.erase(body)
 
 
+func queue_freedom():
+	if my_point == Global.point_of_interest.x:
+		Global.interest_type = 0
+	queue_free()
 
 
 #	print("^",maxY," v",minY)

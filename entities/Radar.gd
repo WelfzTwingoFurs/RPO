@@ -12,9 +12,10 @@ onready var can = $Rcan
 onready var cloro = $Rcloro
 onready var money = $Rmoney
 onready var meds = $Rmeds
+onready var zombie = $Rzombie
 
 #onready var icons = []
-onready var icons = {"player1": player1,"player2": player2,"recruto": recruto,"dortor": dortor,"car": car,"bullet": bullet,"can": can,"cloro": cloro,"money": money,"meds": meds}
+onready var icons = {"player1": player1,"player2": player2,"recruto": recruto,"dortor": dortor,"car": car,"bullet": bullet,"can": can,"cloro": cloro,"money": money,"meds": meds,"zombie": zombie}
 
 
 var display_icons = {}
@@ -37,7 +38,7 @@ var system_msecs = 0
 
 var laglock = 0
 
-func _process(delta):
+func _process(_delta):
 	
 	system_msecs = OS.get_system_time_msecs()
 	
@@ -52,10 +53,11 @@ func _process(delta):
 
 			for item in group_members:
 				if !display_icons.has(item):
-					var new_marker = icons[item.radar_icon].duplicate()
-					radar.add_child(new_marker)
-					new_marker.show()
-					display_icons[item] = new_marker
+					if item.position.x > minX && item.position.x < maxX:
+						var new_marker = icons[item.radar_icon].duplicate()
+						radar.add_child(new_marker)
+						new_marker.show()
+						display_icons[item] = new_marker
 
 			for item in display_icons:
 				#if item != null:
@@ -69,7 +71,7 @@ func _process(delta):
 					
 					display_icons[item].position = Vector2(item_position.x -75,item_position.y/2)
 					
-					if item.radar_icon == "player1" or item.radar_icon == "player2" or item.radar_icon == "recruto" or item.radar_icon == "dortor":
+					if item.radar_icon == "player1" or item.radar_icon == "player2" or item.radar_icon == "recruto" or item.radar_icon == "dortor" or item.radar_icon == "zombie":
 						display_icons[item].scale.x = item.face_dir
 					
 					elif item.radar_icon == "car":

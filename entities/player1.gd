@@ -7,6 +7,12 @@ var SPEED = 150
 const MAXSPEED = 300
 const JUMP = -26
 
+const SPRITE1 = preload("res://media/player_aspone.png")
+const SPRITE2 = preload("res://media/player_aspone-holster.png")
+
+const SHADOW1 = preload("res://media/player_shadow.png")
+const SHADOW2 = preload("res://media/player-holster_shadow.png")
+
 onready var Sprite = $Sprite
 onready var Shadow = $Shadow
 onready var AnimationPlayer = $AnimationPlayer
@@ -42,7 +48,6 @@ onready var hud_arrests1 = $CanvasLayer/LBorder/Player1/iArrest1
 #onready var hud_can2 = $CanvasLayer/LBorder/Player2/iCan2
 
 onready var Col2D = $Col2D
-onready var GroundCol = $GroundCol
 
 var input_dirX = 0
 var input_dirY = 0
@@ -72,23 +77,47 @@ var blockZ = 0
 export var itembusy = 0
 var vailagga = 0
 
+export var lane1 = 0 #336
+export var lane2 = 0 #440
+
 func _ready():
-	Global.playerX = position.x
-	Global.playerY = position.y
+	if minX == 0:
+		minX = Global.minX
+	if maxX == 0:
+		maxX = Global.maxX
+	if minY == 0:
+		minY = Global.minY
+	if maxY == 0:
+		maxY = Global.maxY
+	
 	Global.player = self
 	
-	AnimationPlayer.playback_speed = 0.8
+	Global.minX = minX
+	Global.maxX = maxX
+	Global.minY = minY
+	Global.maxY = maxY
 	
-#	minX = Global.minX
-#	maxX = Global.maxX
-#	minY = Global.minY
-#	maxY = Global.maxY
+	Global.lane1 = lane1
+	Global.lane2 = lane2
+	
 	
 	$Camera2D.limit_left = minX - 25
 	$Camera2D.limit_right = maxX
 	
 	$Camera2D.limit_bottom = minY + 157
 #	$Camera2D.limit_top = -maxY
+	
+	hudconfig()
+	
+	
+	AnimationPlayer.playback_speed = 0.8
+	
+	if holster == 1:
+		Sprite.set_texture(SPRITE2)
+		Shadow.set_texture(SHADOW2)
+	elif holster == -1:
+		Sprite.set_texture(SPRITE1)
+		Shadow.set_texture(SHADOW1)
 
 
 
@@ -111,15 +140,32 @@ var cloros = 0
 var cans = 0
 var arrests = 0
 
-func _process(delta):
+var system_msecs
+
+func score_commas(score): #commas in numbers
+	var string = str(score)
+	var mod = string.length() % 3
+	var res = ""
+	
+	for i in range(0, string.length()):
+		if i != 0 && i % 3 == mod:
+			res += ","
+		res += string[i]
+	
+	hud_score1.text = str(res)
+
+
+
+func _process(_delta):
 	# Hud #
 	hud_lifebar.value = health
 	hud_ammo1.text = str(ammo1)#,"\n",ammo2)
 	
-	hud_score1.text = str(score)
+	#hud_score1.text = str(score_commas(score))
+	score_commas(score)
 	
 	if itembusy != 0:
-		vailagga = abs(sin(OS.get_system_time_msecs()))
+		vailagga = abs(sin(system_msecs))
 		
 		hud_score1.set("custom_colors/font_color",Color(1,vailagga,1))
 		
@@ -137,10 +183,10 @@ func _process(delta):
 		hud_can1.visible = 1
 		hud_can1.text = str(cans)
 	if arrests != 0:
-		hud_arrests1 .visible = 1
-		hud_arrests1 .text = str(arrests)
+		hud_arrests1.visible = 1
+		hud_arrests1.text = str(arrests)
 	
-	
+	system_msecs = OS.get_system_time_msecs()
 	
 	
 #	if position.y < maxY:
@@ -177,32 +223,37 @@ func _process(delta):
 				bul_pos = 0
 				$Col2D.scale.y = 1
 	
-	
-	if Input.is_action_pressed("ply_moveleft"):
-		#if blockX != -1:
-		input_dirX = -1
-		#else:
-		#	input_dirX = 0
-	elif Input.is_action_pressed("ply_moveright"):
-		#if blockX != 1:
-		input_dirX = 1
-		#else:
-		#	input_dirX = 0
+	if abs(holster) != 2:
+		if Input.is_action_pressed("ply_moveleft"):
+			#if blockX != -1:
+			input_dirX = -1
+			#else:
+			#	input_dirX = 0
+		elif Input.is_action_pressed("ply_moveright"):
+			#if blockX != 1:
+			input_dirX = 1
+			#else:
+			#	input_dirX = 0
+		else:
+			input_dirX = 0
+
+		if Input.is_action_pressed("ply_moveup"):
+			#if blockY != -1:
+			input_dirY = -1
+			#else:
+			#	input_dirY = 0
+		elif Input.is_action_pressed("ply_movedown"):
+			#if blockY != 1:
+			input_dirY = 1
+			#else:
+			#	input_dirY = 0
+		else:
+			input_dirY = 0
 	else:
 		input_dirX = 0
-	
-	if Input.is_action_pressed("ply_moveup"):
-		#if blockY != -1:
-		input_dirY = -1
-		#else:
-		#	input_dirY = 0
-	elif Input.is_action_pressed("ply_movedown"):
-		#if blockY != 1:
-		input_dirY = 1
-		#else:
-		#	input_dirY = 0
-	else:
 		input_dirY = 0
+
+
 
 	if face_dir == 1:
 		set_flipped(false)
@@ -213,8 +264,15 @@ func _process(delta):
 		if last_dir == 0:
 			face_dir = input_dirX
 	
-	Global.playerX = position.x
-	Global.playerY = position.y
+	
+	if spawn_on != 0:
+		if (system_msecs % spawn_frequency) == 0:
+			spawner()
+	
+	
+	
+	
+	
 	
 	
 	
@@ -224,14 +282,15 @@ func _process(delta):
 		Debug.text = str("limits: ^(",maxY,") v(",minY,") <(",minX,") >(",maxX,")\n",
 		"input: X(",input_dirX,") Y(",input_dirY, "), face(",face_dir,")\n",
 		"motion: X(",round(motion.x),") Y(",round(motion.y),") Z(",motionZ,"), A(",round(player_speed),")\n",
-		"position: X(",round(position.x),") Y(",round(position.y),") Z(",positionZ,")\n",
+		"position: X(",round(position.x),") Y(",round(position.y),") Z(",round(positionZ),")\n",
 		"onfloor(",onfloor,"), bul-pos(",(positionZ-67)+bul_pos,")\n",
 		"aniframe(",aniframe,") Sprite.frame(",Sprite.frame,")\n",
 		"spriteplus/shooting(",shooting,") ouch(",ouch,")\n",
 		"faketimer(",faketimer,"), ammo: I(",ammo1,") II(",ammo2,")\n",
-		"HP: ",health,", Foes: ",Global.foes,", Friends: ",Global.friends,
+		"NPCs:",Global.npcs,", Foes: ",Global.foes,", Friends: ",Global.friends,
 		"\nWindow: X(",windowX,") Y(",windowY,"), Zoom:",zoom,"\n Speed:",Engine.time_scale,
-		", FPS:",Engine.get_frames_per_second(),", itembusy:",itembusy,"\nBlock: x(",blockX,") y(",blockY,") z(",blockZ,")")
+		", FPS:",Engine.get_frames_per_second(),", itembusy:",itembusy,"\nBlock: x(",blockX,") y(",blockY,") z(",blockZ,")\n",
+		"holster:",holster,". Interest ",Global.interest_type," at ",round(Global.point_of_interest.x),"//",round(Global.point_of_interest.y))
 
 	if onfloor == 2:
 		player_speed = lerp(player_speed,(SPEED/1.9),0.10)
@@ -306,7 +365,7 @@ var windowY
 
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	Sprite.position.y = positionZ
 	
 	if Global.foes < 0:
@@ -398,37 +457,67 @@ func shoot():
 	
 	get_parent().add_child(bul_instance)
 
+export var holster = -1
+
 func idle():
 	change_state(STATES.IDLE)
 	if health < 1:
 		die()
 	
 	if ouch == 0:
-		if Input.is_action_pressed("ply_shoot"):
-			if faketimer == 0:
-				shoot()
-				if ammo1 > 0:
-					faketimer = 13
-					ammo1 -= 1
-				else:
-					faketimer = 23
-				
-				shooting = 10
+		if Input.is_action_just_pressed("ply_holster") && onfloor != 0:
+			input_dirX = 0
+			input_dirY = 0
+			shooting = 0
+			onfloor = 1
 			
-			#elif faketimer < 6:
-			#	shooting = 0
-			# arm lowering after every shot, worked well but didn't look good
+			AnimationPlayer.stop()
+			
+			if holster == 1: #draw
+				AnimationPlayer.play("draw")
+				Sprite.set_texture(SPRITE1)
+				Shadow.set_texture(SHADOW1)
+				holster = 2
+			elif holster == -1: #holster
+				AnimationPlayer.play("holster")
+				Sprite.set_texture(SPRITE2)
+				Shadow.set_texture(SHADOW2)
+				holster = -2
+			else:
+				holster /= 2
+				if holster == 1: #cancel, holstered
+					Sprite.set_texture(SPRITE2)
+					Shadow.set_texture(SHADOW2)
+				elif holster == -1: #cancel, drawn
+					Sprite.set_texture(SPRITE1)
+					Shadow.set_texture(SHADOW1)
 		
-		elif Input.is_action_just_released("ply_shoot"):
-			if ammo1 < 1:
-				faketimer /= 2
+		if holster == -1:
+			if Input.is_action_pressed("ply_shoot"):
+				if faketimer == 0:
+					shoot()
+					if ammo1 > 0:
+						faketimer = 13
+						ammo1 -= 1
+					else:
+						faketimer = 23
+					
+					shooting = 10
+				
+				#elif faketimer < 6:
+				#	shooting = 0
+				# arm lowering after every shot, worked well but didn't look good
 			
-		elif !Input.is_action_pressed("ply_shoot"):
-			if faketimer == 0:
-				shooting = 0
+			elif Input.is_action_just_released("ply_shoot"):
+				if ammo1 < 1:
+					faketimer /= 2
+				
+			elif !Input.is_action_pressed("ply_shoot"):
+				if faketimer == 0:
+					shooting = 0
 
 
-		if onfloor != 0:
+		if onfloor != 0 && abs(holster) != 2:
 			if Input.is_action_pressed("ply_sneak"):
 				onfloor = 2
 			else:
@@ -491,11 +580,12 @@ func idle():
 			AnimationPlayer.play("jump")
 		else:
 			if input_dirX == 0 && input_dirY == 0:
-				if shooting == 0:
-					AnimationPlayer.play("idle") #AnimationPlayer.stop() #aniframe = 0
-				else:
-					AnimationPlayer.stop()
-					aniframe = 0
+				if abs(holster) != 2:
+					if shooting == 0:
+						AnimationPlayer.play("idle") #AnimationPlayer.stop() #aniframe = 0
+					else:
+						AnimationPlayer.stop()
+						aniframe = 0
 			else:
 				AnimationPlayer.play("walk")
 
@@ -588,6 +678,9 @@ func take_damage(damage):
 	else:
 		Sprite.frame = 106
 	
+	if abs(holster) > 1:
+		holster /= 2
+	
 	# Sprite.frame = 107, ouch = 1 for (0.2 AniPlay X1), then ouch = 0
 
 var clorotimer = 0
@@ -624,3 +717,187 @@ func set_flipped(flipstate):
 	else: ########### RIGHT ###
 		Sprite.flip_h = false
 		Shadow.flip_h = false
+
+
+
+####################################################################
+####################################################################
+####################################################################
+####################################################################
+####################################################################
+####################################################################
+
+const RECRUTO = preload("res://entities/recruto.tscn")
+const DORTOR = preload("res://entities/dortor.tscn")
+const CAR = preload("res://entities/car.tscn")
+const NPCB = preload("res://entities/NPC-B.tscn")
+const ZOMBIE = preload("res://entities/zombie.tscn")
+const NPC = preload("res://entities/NPC.tscn")
+
+
+
+
+var sight = INF
+export var spawn_on = 0
+export var spawn_frequency = 2000
+
+
+var spawn_density = 0
+
+var chosen_id = 0
+var chosen
+var chosen_position
+var chosen_positionY
+var chosen_direction = 1
+
+func spawner():
+	sight = abs(get_viewport().size.x)/2
+	chosen_direction *= -1
+	
+	if spawn_on == 1:
+		spawn_density = 1
+		
+		if chosen_id == 0:
+			chosen = RECRUTO
+		elif chosen_id == 1:
+			chosen = DORTOR
+		elif chosen_id == 2:
+			chosen = CAR
+		elif chosen_id == 3:
+			chosen = NPCB
+		elif chosen_id == 4:
+			chosen = ZOMBIE
+		elif chosen_id == 5:
+			chosen = NPC
+		
+		chosen_id = (randi() % 6)
+	
+	elif spawn_on == 2:
+		spawn_density = 1
+		
+		if chosen_id == 0:
+			chosen = NPCB
+		elif chosen_id == 1:
+			chosen = NPCB
+		elif chosen_id == 2:
+			chosen = NPCB
+		elif chosen_id == 3:
+			chosen = DORTOR
+		elif chosen_id == 4:
+			chosen = DORTOR
+		elif chosen_id == 5:
+			chosen = RECRUTO
+		elif chosen_id == 6:
+			chosen = RECRUTO
+		elif chosen_id == 7:
+			chosen = CAR
+		elif chosen_id == 8:
+			chosen = CAR
+		elif chosen_id == 9:
+			chosen = ZOMBIE
+		
+		chosen_id = (randi() % 10)
+	
+	elif spawn_on == 3:
+		spawn_density = 1
+		
+		if chosen_id == 0:
+			chosen = NPCB
+		elif chosen_id == 1:
+			chosen = NPCB
+		elif chosen_id == 2:
+			chosen = NPCB#DORTOR
+			
+		chosen_id = (randi() % 3)
+	
+	elif spawn_on == 4:
+		if chosen_id == 0:
+			chosen = NPCB
+			
+			spawn_density = 1+(randi() % 5)
+			
+		elif chosen_id == 1:
+			chosen = RECRUTO
+			
+			spawn_density = 2+(randi() % 3)
+		
+		elif chosen_id == 2:
+			chosen = DORTOR
+			
+			spawn_density = 1+(randi() % 2)
+		
+		elif chosen_id == 3:
+			chosen = CAR
+			
+			spawn_density = 1+(randi() % 2)
+		
+		chosen_id = (randi() % 4)
+	
+	spawn_guy()
+
+
+
+
+func spawn_guy():
+	var dude_instance = chosen.instance()
+	
+	dude_instance.maxX = maxX
+	dude_instance.minX = minX
+	dude_instance.maxY = maxY
+	dude_instance.minY = minY
+	
+	if position.x < minX + sight:
+		chosen_position = minX + (sight*2)
+		
+	elif position.x > maxX - sight:
+		chosen_position = maxX - (sight*2)
+		
+	else:
+		chosen_position = position.x+(sight*chosen_direction)
+	
+	
+	
+	
+	
+	if lane1 != 0 && lane2 != 0:
+		chosen_positionY = (randi() % 50)
+		
+		if chosen_positionY % 2 == 0:
+			dude_instance.position.y = lane1-(chosen_positionY+50)
+		else:
+			dude_instance.position.y = lane2+chosen_positionY
+	else:
+		chosen_positionY = maxY+(randi() % (maxY-minY))
+	
+	
+	
+	
+	if chosen == CAR:#chosen_id == 2:
+		dude_instance.position.x = (chosen_position*2)*chosen_direction
+		if chosen_direction == 1:
+			dude_instance.position.y = lane1
+		else:
+			dude_instance.position.y = lane2
+		
+		dude_instance.faceX = -chosen_direction
+		dude_instance.neutral_dir = -chosen_direction
+		dude_instance.state = 3
+	else:
+		dude_instance.position.x = (chosen_position+(10*zoom)+chosen_positionY)*chosen_direction
+	
+	
+	if chosen_direction == 1:
+		chosen_direction = -1
+	elif chosen_direction == -1:
+		chosen_direction = 1
+	
+	
+	get_parent().add_child(dude_instance)
+	
+	if spawn_density != 0:
+		spawn_density -= 1
+		spawn_guy()
+		
+		
+	
+	

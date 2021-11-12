@@ -1,7 +1,9 @@
 extends Camera2D
 
+export var speed = 3.8
+
 func _ready():
-	Engine.time_scale = 3.8
+	Engine.time_scale = speed
 
 func _physics_process(delta):
 	

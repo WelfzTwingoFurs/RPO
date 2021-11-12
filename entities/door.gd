@@ -3,6 +3,7 @@ extends Position2D
 const RECRUTO = preload("res://entities/recruto.tscn")
 const AMIGO = preload("res://entities/amigo.tscn")
 const DORTOR = preload("res://entities/dortor.tscn")
+const ZOMBIE = preload("res://entities/zombie.tscn")
 
 export var timer = 0
 export var rate = 0
@@ -24,8 +25,10 @@ func _ready():
 		whotospawn = AMIGO
 	elif who == 2:
 		whotospawn = DORTOR
+	elif who == 3:
+		whotospawn = ZOMBIE
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if rate != 0 && ammo != 0:
 		$Label.text = str(rate,"-",timer,", ",ammo)
 		

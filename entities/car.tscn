@@ -1,10 +1,9 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://media/carros/delrey11.png" type="Texture" id=1]
 [ext_resource path="res://entities/car.gd" type="Script" id=2]
-[ext_resource path="res://media/dortor.png" type="Texture" id=3]
+[ext_resource path="res://media/dortor-defaultish.png" type="Texture" id=3]
 [ext_resource path="res://entities/Audio.gd" type="Script" id=4]
-[ext_resource path="res://media/sons2/big-gun.wav" type="AudioStream" id=5]
 [ext_resource path="res://entities/bullet-Area2Dbullshit.gd" type="Script" id=6]
 
 [sub_resource type="RectangleShape2D" id=1]
@@ -114,13 +113,10 @@ anims/turnLeft = SubResource( 3 )
 
 [node name="Audio" type="AudioStreamPlayer" parent="."]
 volume_db = -10.0
-mix_target = 2
 script = ExtResource( 4 )
 
 [node name="Audio2" type="AudioStreamPlayer" parent="."]
-stream = ExtResource( 5 )
 volume_db = -15.0
-mix_target = 2
 script = ExtResource( 4 )
 
 [connection signal="area_entered" from="Area2Dsolid" to="." method="_on_Area2Dsolid_area_entered"]

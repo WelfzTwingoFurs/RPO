@@ -1,4 +1,4 @@
-extends AudioStreamPlayer
+extends AudioStreamPlayer2D
 
 var which
 
@@ -185,18 +185,4 @@ func npc_scream():
 		set_stream(NPC_SCREAM4)
 	if which == 5:
 		set_stream(NPC_SCREAM5)
-	play()
-
-
-const NPC_FEAR1 = preload("res://media/sons/pls1.wav")
-const NPC_FEAR2 = preload("res://media/sons/pls2.wav")
-const NPC_FEAR3 = preload("res://media/sons/pls3.wav")
-func npc_fear():
-	which = (randi() % 3)
-	if which == 0:
-		set_stream(NPC_FEAR1)
-	if which == 1:
-		set_stream(NPC_FEAR2)
-	if which == 2:
-		set_stream(NPC_FEAR3)
 	play()

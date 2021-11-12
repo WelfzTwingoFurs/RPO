@@ -206,10 +206,10 @@ func SAFEDIE():
 
 func transformation():
 	Global.friends -= 1
-	var whotospawn = preload("res://entities/recruto.tscn")
+	var whotospawn = preload("res://entities/zombie.tscn")
 	var bul_instance = whotospawn.instance()
 	bul_instance.position = Vector2(position.x,position.y)
-	bul_instance.type = 1
+#	bul_instance.type = 1
 	
 	bul_instance.minX = minX
 	bul_instance.maxX = maxX

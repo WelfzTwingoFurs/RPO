@@ -14,7 +14,7 @@ export var maxY = -1
 
 export var motdir = 0
 
-func _process(delta):
+func _process(_delta):
 	if is_colliding():
 		var who = get_collider()
 		
@@ -30,6 +30,10 @@ func _process(delta):
 				else:
 					if who.face_dir == motdir:
 						updatem(who)
+			
+			elif who.is_in_group("npcb"):
+				if who.face_dir == motdir:
+					updatem(who)
 			
 			else:#if who.is_in_group("bullet"):   #BulletArea2D
 				if who.get_name() == "BulletArea2D":

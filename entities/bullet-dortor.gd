@@ -22,10 +22,13 @@ func _ready():
 	$Area2D.position.y -= posZ
 	
 	posZcurrent = round($Area2D.position.y)
+	
+#	Global.point_of_interest = position 
+#	Global.interest_type = 1
 
 var rate = 0.01
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	motion = move_and_slide(motion, Vector2(0,-1))
 	
 	$Shadow.frame = $Sprite.frame
@@ -54,6 +57,12 @@ func _physics_process(delta):
 			#var damage
 			body.take_cloroquina()#take_damage(damage)
 			queue_free()
+		elif body.is_in_group("dortor"):
+			#var damage
+			#take_damage(damage)
+			if body.playeranger == 0:
+				body.take_cloroquina()
+				queue_free()
 
 var damagearray = []
 var bodyY

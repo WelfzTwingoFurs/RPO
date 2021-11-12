@@ -39,6 +39,16 @@ func change_state(new_state):
 	state = new_state
 
 func _ready():
+	if minX == 0:
+		minX = Global.minX
+	if maxX == 0:
+		maxX = Global.maxX
+	if minY == 0:
+		minY = Global.minY
+	if maxY == 0:
+		maxY = Global.maxY
+	
+	
 	Global.foes += 1
 	
 	howmany = Global.foes
@@ -64,7 +74,12 @@ func _ready():
 		speed = 125
 		howmany *= 5
 
-func _process(delta):
+func _process(_delta):
+	if position.x > maxX:
+		SAFEDIE()
+	if position.x < minX:
+		SAFEDIE()
+	
 	match state:
 		STATES.IDLE:
 			idle()
@@ -81,8 +96,8 @@ func _process(delta):
 	
 	var systemmseconds = OS.get_system_time_msecs()
 	if (systemmseconds % 10 == 0): #Check pretty quickly but not always. idk
-		playerX = position.x - Global.playerX
-		playerY = position.y - Global.playerY
+		playerX = position.x - Global.player.position.x
+		playerY = position.y - Global.player.position.y
 	
 	if ouch == 0:
 		face_dir = -sign(playerX)
@@ -119,7 +134,7 @@ func _process(delta):
 
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if faketimer > 0:
 		if align == 1:
 			faketimer -= 1
@@ -253,7 +268,7 @@ func idle():
 			
 			### ### ### Surrender enemies function ### ### ###
 			
-			if abs(playerX) < 45 && abs(playerY) < 15: ## beginning ##
+			if abs(playerX) < 45 && abs(playerY) < 15 && Global.player.holster == -1: ## beginning ##
 				Col2D.scale.y = 1
 				Col2D.position.y = 0
 				AniPlay.play("giveup")
@@ -313,7 +328,7 @@ func giveupsound():
 
 export onready var ouch = 0
 
-func take_damage(damage):
+func take_damage(_damage):
 	motion.x = 0
 	motion.y = 0
 	ouch = 1

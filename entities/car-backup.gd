@@ -37,12 +37,10 @@ export var maxY = 0
 var our_colX = 0
 var our_colY = 0
 
-enum STATES {EMPTY,PLAYER,ENEMY,NEUTRAL}
+enum STATES {EMPTY,PLAYER,ENEMY}
 export(int) var state = STATES.EMPTY
 
 func _ready():
-	spawn_secs = OS.get_system_time_secs()
-	
 	$AnimationPlayer.play("lazy")
 	Driver.visible = 0
 	
@@ -50,395 +48,14 @@ func _ready():
 	bullshit2D.maxX = maxX
 	bullshit2D.minY = minY
 	bullshit2D.maxY = maxY
-	
-	lane1 = Global.lane1
-	lane2 = Global.lane2
 
-var lane1 = 0
-var lane2 = 0
 
 var Zindexvar = -1
 
 var ourCol
 
-
-func _physics_process(_delta):
-	
-	if state == 0:
-		pass
-	
-	elif state == 1:
-		if Input.is_action_pressed("ply_moveleft"):
-			input_dirX = -1
-			
-			if faceY == 0: #Wheels when no Y
-				if input_dirY == 1:
-					turnframe = 20
-				elif input_dirY == -1:
-					turnframe = 10
-				else:
-					turnframe = 0
-			else:
-				if abs(input_dirY) == 1:
-					if input_dirX == faceX:
-						if input_dirY == faceY:
-							turnframe = 0
-						else:
-							if faceY == -1:
-								turnframe = 20
-							else:
-								turnframe = 10
-					else:
-						if motion_dirX != faceX:
-							turnframe = 0
-						else:
-							if faceY == -1:
-								turnframe = 10
-							else:
-								turnframe = 20
-				else:
-					if faceY == 1:
-						if faceX == 1:
-							turnframe = 20
-						else:
-							turnframe = 10
-					else:
-						if faceX == 1:
-							turnframe = 10
-						else:
-							turnframe = 20
-			
-			
-		elif Input.is_action_pressed("ply_moveright"):
-			input_dirX = 1
-			
-			if faceY == 0: #Wheels when no Y
-				if input_dirY == 1:
-					turnframe = 20
-				elif input_dirY == -1:
-					turnframe = 10
-				else:
-					turnframe = 0
-			else:
-				if abs(input_dirY) == 1:
-					if input_dirX == faceX:
-						if input_dirY == faceY:
-							turnframe = 0
-						else:
-							if faceY == -1:
-								turnframe = 20
-							else:
-								turnframe = 10
-					else:
-						if motion_dirX != faceX:
-							turnframe = 0
-						else:
-							if faceY == -1:
-								turnframe = 10
-							else:
-								turnframe = 20
-				else:
-					if faceY == 1:
-						if faceX == 1:
-							turnframe = 10
-						else:
-							turnframe = 20
-					else:
-						if faceX == 1:
-							turnframe = 20
-						else:
-							turnframe = 10
-			
-			
-		else:
-			input_dirX = 0
-
-		if Input.is_action_pressed("ply_moveup"):
-			input_dirY = -1
-			
-			if faceX == 0: #Wheels when no X
-				set_flipped(false)
-				if input_dirX == 1:
-					if faceY == 1:
-						turnframe = 20
-					else:
-						turnframe = 10
-				elif input_dirX == -1:
-					if faceY == 1:
-						turnframe = 10
-					else:
-						turnframe = 20
-				else:
-					turnframe = 0
-			else:
-				if input_dirX == 0:
-					turnframe = 10
-			
-		elif Input.is_action_pressed("ply_movedown"):
-			input_dirY = 1
-			
-			if faceX == 0: #Wheels when no X
-				set_flipped(false)
-				if input_dirX == 1:
-					if faceY == 1:
-						turnframe = 10
-					else:
-						turnframe = 20
-				elif input_dirX == -1:
-					if faceY == 1:
-						turnframe = 20
-					else:
-						turnframe = 10
-				else:
-					turnframe = 0
-			else:
-				if input_dirX == 0:
-					turnframe = 20
-			
-		else:
-			input_dirY = 0
-		
-		
-		## Input & motion logic ##
-		if input_dirY == 0: 
-			if faceY == 0:
-				motion.y = lerp(motion.y,0,0.005) #De-accel Y when no Y inputs
-			else:
-				if faceX == 0:
-					motion.y = lerp(motion.y,0,0.004)
-				else:
-					motion.y = lerp(motion.y,0,0.002)
-		else:
-			if faceY != 0:
-				if input_dirY == faceY:
-					motion.y += (0.375*input_dirY)*8 #Accel when speeding in facing direction
-				elif motion_dirY == faceY:
-					motion.y = lerp(motion.y,0,0.020) #De-accel Y when breaking
-				else:
-					motion.y += (0.26*input_dirY)*8 #Otherwise reversing speed
-			else:
-				motion.y += (input_dirY*abs(motion.x)/1000)*8
-				motion.y = lerp(motion.y,0,0.004)
-		
-		if input_dirX == 0:
-			if faceX == 0:
-				motion.x = lerp(motion.x,0,0.010) #De-accel X when no X inputs
-			else:
-				if faceY == 0:
-					motion.x = lerp(motion.x,0,0.002)
-				else:
-					motion.x = lerp(motion.x,0,0.001)
-		else:
-			if faceX != 0:
-				if input_dirX == faceX:
-					motion.x += (input_dirX)*8 #Accel when speeding in facing direction
-				elif motion_dirX == faceX:
-					motion.x = lerp(motion.x,0,0.010) #De-accel X when breaking
-				else:
-					motion.x += (0.6*input_dirX)*8  #Otherwise reversing speed
-			else:
-				motion.x += (input_dirX*abs(motion.y)/500)*8
-				motion.x = lerp(motion.x,0,0.002)
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	elif state != 1:
-		Interior.z_index = -1
-		
-		
-		if input_dirX == -1: #Going left
-			
-			if faceY == 0: #Wheels when no Y
-				if input_dirY == 1:
-					turnframe = 20
-				elif input_dirY == -1:
-					turnframe = 10
-				else:
-					turnframe = 0
-			else:
-				if abs(input_dirY) == 1:
-					turnframe = 0
-				else:
-					if faceY == 1:
-						if faceX == 1:
-							turnframe = 20
-						else:
-							turnframe = 10
-					else:
-						if faceX == 1:
-							turnframe = 10
-						else:
-							turnframe = 20
-			
-			
-		elif input_dirX == 1: #Going right
-			
-			if faceY == 0: #Wheels when no Y
-				if input_dirY == 1:
-					turnframe = 20
-				elif input_dirY == -1:
-					turnframe = 10
-				else:
-					turnframe = 0
-			else:
-				if abs(input_dirY) == 1:
-					turnframe = 0
-				else:
-					if faceY == 1:
-						if faceX == 1:
-							turnframe = 10
-						else:
-							turnframe = 20
-					else:
-						if faceX == 1:
-							turnframe = 20
-						else:
-							turnframe = 10
-			
-			
-		else:
-			if abs(motion.x) > 100:
-				input_dirX = -faceX
-			else:
-				input_dirX = 0
-
-		if input_dirY == -1: #Going up
-			
-			if faceX == 0: #Wheels when no X
-				set_flipped(false)
-				if input_dirX == 1:
-					if faceY == 1:
-						turnframe = 20
-					else:
-						turnframe = 10
-				elif input_dirX == -1:
-					if faceY == 1:
-						turnframe = 10
-					else:
-						turnframe = 20
-				else:
-					turnframe = 0
-			else:
-				if input_dirX == 0:
-					turnframe = 10
-			
-		elif input_dirY == 1: #Going down
-			
-			if faceX == 0: #Wheels when no X
-				set_flipped(false)
-				if input_dirX == 1:
-					if faceY == 1:
-						turnframe = 10
-					else:
-						turnframe = 20
-				elif input_dirX == -1:
-					if faceY == 1:
-						turnframe = 20
-					else:
-						turnframe = 10
-				else:
-					turnframe = 0
-			else:
-				if input_dirX == 0:
-					turnframe = 20
-			
-		else:
-			if abs(motion.y) > 50:
-				input_dirY = -faceY
-			else:
-				input_dirY = 0
-
-
-		## Input & motion logic ##
-		if input_dirY == 0: 
-			if faceY == 0:
-				motion.y = lerp(motion.y,0,0.005) #De-accel Y when no Y inputs
-			else:
-				if faceX == 0:
-					motion.y = lerp(motion.y,0,0.004)
-				else:
-					motion.y = lerp(motion.y,0,0.002)
-		else:
-			if faceY != 0:
-				if input_dirY == faceY:
-					motion.y += (0.375*input_dirY)*8 #Accel when speeding in facing direction
-				elif motion_dirY == faceY:
-					motion.y = lerp(motion.y,0,0.020) #De-accel Y when breaking
-				else:
-					motion.y += (0.26*input_dirY)*8 #Otherwise reversing speed
-			else:
-				motion.y += (input_dirY*abs(motion.x)/1000)*8
-				motion.y = lerp(motion.y,0,0.004)
-
-		if input_dirX == 0:
-			if faceX == 0:
-				motion.x = lerp(motion.x,0,0.010) #De-accel X when no X inputs
-			else:
-				if faceY == 0:
-					motion.x = lerp(motion.x,0,0.002)
-				else:
-					motion.x = lerp(motion.x,0,0.001)
-		else:
-			if faceX != 0:
-				if input_dirX == faceX:
-					motion.x += (input_dirX)*8 #Accel when speeding in facing direction
-				elif motion_dirX == faceX:
-					motion.x = lerp(motion.x,0,0.010) #De-accel X when breaking
-				else:
-					motion.x += (0.6*input_dirX)*8  #Otherwise reversing speed
-			else:
-				motion.x += (input_dirX*abs(motion.y)/500)*8
-				motion.x = lerp(motion.x,0,0.002)
-
-
-
-
-		# Driver's sprite logic
-		Driver.visible = 1
-		Driver.position = drivepos
-		Driver.scale.x = driveface
-		
-		if faceX != 0:
-			driveface = faceX
-			
-			if faceY == 0:
-				Driver.frame = 70 # -> sideways
-				if faceX == 1:
-					drivepos = Vector2(-6,-50)
-				else:
-					drivepos = Vector2(7,-49)
-			else:
-				if faceY == -1:
-					Driver.frame = 72 # ¨| diag-up
-					if faceX == 1:
-						drivepos = Vector2(-7,-55)
-					else:
-						drivepos = Vector2(-31,-53)
-				if faceY == 1:
-					Driver.frame = 71 # _| diag-down
-					if faceX == 1:
-						drivepos = Vector2(-1,-55)
-					else:
-						drivepos = Vector2(25,-54)
-			
-		else:
-			driveface = 1
-			if faceY == 1:
-				Driver.frame = 73 # \/ down
-				drivepos = Vector2(14,-63)
-			else:
-				Driver.frame = 74 # /\ up
-				drivepos = Vector2(-19,-60)
-	
-	
-	
+#func _process(delta): # CHANGE IT TO PHYSICS PROCESS YOU DUMBASS
+func _physics_process(delta):
 	minX = bullshit2D.minX
 	maxX = bullshit2D.maxX
 	minY = bullshit2D.minY
@@ -454,8 +71,6 @@ func _physics_process(_delta):
 			playerdrive()
 		STATES.ENEMY:
 			enemydrive()
-		STATES.NEUTRAL:
-			neutraldrive()
 	
 	
 	
@@ -586,9 +201,8 @@ func _physics_process(_delta):
 	
 	
 	if state != 2:
-		if state != 3:
-			if driversarray == null:
-				change_state(STATES.EMPTY)
+		if driversarray == null:
+			change_state(STATES.EMPTY)
 	
 	
 	
@@ -753,7 +367,7 @@ func _physics_process(_delta):
 	motion.x = lerp(motion.x,0,0.02)
 	motion.y = lerp(motion.y,0,0.01)
 
-func _process(_delta):
+func _process(delta):
 	for body in driversarray:
 #		if body.get_name() != "GroundCol":
 		if body.state != 2: # if PLAYER's isn't 2, which for it, is DRIVING.
@@ -821,11 +435,10 @@ func _process(_delta):
 		
 		
 		if state != 2:
-			if state != 3:
-				if body.car != self:
-					change_state(STATES.EMPTY)
-				if body.state != 2:
-					change_state(STATES.EMPTY)
+			if body.car != self:
+				change_state(STATES.EMPTY)
+			if body.state != 2:
+				change_state(STATES.EMPTY)
 		
 		if driver == 0:
 			if Input.is_action_just_pressed("ply_interact"):
@@ -837,8 +450,6 @@ func _process(_delta):
 					body.driving()
 					
 					if state == 2:
-						shootman()
-					if state == 3:
 						shootman()
 					
 					change_state(STATES.PLAYER)
@@ -856,9 +467,6 @@ func _process(_delta):
 					body.Sprite.position = Vector2(0,0)
 					
 					change_state(STATES.EMPTY)
-
-
-
 
 func change_state(new_state):
 	state = new_state
@@ -890,6 +498,178 @@ func playerdrive():
 		change_state(STATES.EMPTY)
 	else:
 		takeoff = 1
+	
+	if Input.is_action_pressed("ply_moveleft"):
+		input_dirX = -1
+		
+		if faceY == 0: #Wheels when no Y
+			if input_dirY == 1:
+				turnframe = 20
+			elif input_dirY == -1:
+				turnframe = 10
+			else:
+				turnframe = 0
+		else:
+			if abs(input_dirY) == 1:
+				if input_dirX == faceX:
+					if input_dirY == faceY:
+						turnframe = 0
+					else:
+						if faceY == -1:
+							turnframe = 20
+						else:
+							turnframe = 10
+				else:
+					if motion_dirX != faceX:
+						turnframe = 0
+					else:
+						if faceY == -1:
+							turnframe = 10
+						else:
+							turnframe = 20
+			else:
+				if faceY == 1:
+					if faceX == 1:
+						turnframe = 20
+					else:
+						turnframe = 10
+				else:
+					if faceX == 1:
+						turnframe = 10
+					else:
+						turnframe = 20
+		
+		
+	elif Input.is_action_pressed("ply_moveright"):
+		input_dirX = 1
+		
+		if faceY == 0: #Wheels when no Y
+			if input_dirY == 1:
+				turnframe = 20
+			elif input_dirY == -1:
+				turnframe = 10
+			else:
+				turnframe = 0
+		else:
+			if abs(input_dirY) == 1:
+				if input_dirX == faceX:
+					if input_dirY == faceY:
+						turnframe = 0
+					else:
+						if faceY == -1:
+							turnframe = 20
+						else:
+							turnframe = 10
+				else:
+					if motion_dirX != faceX:
+						turnframe = 0
+					else:
+						if faceY == -1:
+							turnframe = 10
+						else:
+							turnframe = 20
+			else:
+				if faceY == 1:
+					if faceX == 1:
+						turnframe = 10
+					else:
+						turnframe = 20
+				else:
+					if faceX == 1:
+						turnframe = 20
+					else:
+						turnframe = 10
+		
+		
+	else:
+		input_dirX = 0
+
+	if Input.is_action_pressed("ply_moveup"):
+		input_dirY = -1
+		
+		if faceX == 0: #Wheels when no X
+			set_flipped(false)
+			if input_dirX == 1:
+				if faceY == 1:
+					turnframe = 20
+				else:
+					turnframe = 10
+			elif input_dirX == -1:
+				if faceY == 1:
+					turnframe = 10
+				else:
+					turnframe = 20
+			else:
+				turnframe = 0
+		else:
+			if input_dirX == 0:
+				turnframe = 10
+		
+	elif Input.is_action_pressed("ply_movedown"):
+		input_dirY = 1
+		
+		if faceX == 0: #Wheels when no X
+			set_flipped(false)
+			if input_dirX == 1:
+				if faceY == 1:
+					turnframe = 10
+				else:
+					turnframe = 20
+			elif input_dirX == -1:
+				if faceY == 1:
+					turnframe = 20
+				else:
+					turnframe = 10
+			else:
+				turnframe = 0
+		else:
+			if input_dirX == 0:
+				turnframe = 20
+		
+	else:
+		input_dirY = 0
+	
+	
+	## Input & motion logic ##
+	if input_dirY == 0: 
+		if faceY == 0:
+			motion.y = lerp(motion.y,0,0.005) #De-accel Y when no Y inputs
+		else:
+			if faceX == 0:
+				motion.y = lerp(motion.y,0,0.004)
+			else:
+				motion.y = lerp(motion.y,0,0.002)
+	else:
+		if faceY != 0:
+			if input_dirY == faceY:
+				motion.y += (0.375*input_dirY)*8 #Accel when speeding in facing direction
+			elif motion_dirY == faceY:
+				motion.y = lerp(motion.y,0,0.020) #De-accel Y when breaking
+			else:
+				motion.y += (0.26*input_dirY)*8 #Otherwise reversing speed
+		else:
+			motion.y += (input_dirY*abs(motion.x)/1000)*8
+			motion.y = lerp(motion.y,0,0.004)
+	
+	if input_dirX == 0:
+		if faceX == 0:
+			motion.x = lerp(motion.x,0,0.010) #De-accel X when no X inputs
+		else:
+			if faceY == 0:
+				motion.x = lerp(motion.x,0,0.002)
+			else:
+				motion.x = lerp(motion.x,0,0.001)
+	else:
+		if faceX != 0:
+			if input_dirX == faceX:
+				motion.x += (input_dirX)*8 #Accel when speeding in facing direction
+			elif motion_dirX == faceX:
+				motion.x = lerp(motion.x,0,0.010) #De-accel X when breaking
+			else:
+				motion.x += (0.6*input_dirX)*8  #Otherwise reversing speed
+		else:
+			motion.x += (input_dirX*abs(motion.y)/500)*8
+			motion.x = lerp(motion.x,0,0.002)
 
 
 var drivepos = Vector2(0,0)
@@ -901,47 +681,9 @@ var playerY = 0
 var pedX = 0
 var pedY = 0
 
-var spawn_secs
-var system_secs = 0
+
+var system_msecs = 0
 var was_secs = 0
-
-func neutraldrive():
-	Audio.volume_db = -abs(playerX/30)
-	Audio2.volume_db = -abs(playerX/30)
-	
-	system_secs = OS.get_system_time_secs()
-	
-	playerX = Global.player.position.x - position.x
-	
-	
-	if system_secs > (spawn_secs+3):
-		var sight = abs(get_viewport().size.x)/1.5
-		
-		if neutral_dir == 1:
-			if position.x > maxX+100:
-				queue_free()
-		elif neutral_dir == -1:
-			if position.x < minX-100:
-				queue_free()
-		
-		
-		if Global.player.position.x < minX + sight:
-			if position.x > minX + (sight*2):
-				queue_free()
-		
-		elif Global.player.position.x > maxX - sight:
-			if position.x < maxX - (sight*2):
-				queue_free()
-		
-		else:
-			if (playerX) > sight:
-				queue_free()
-	
-	input_dirX = neutral_dir
-
-var neutral_dir = 0
-
-
 
 func enemydrive():
 #	system_msecs = OS.get_system_time_secs()
@@ -956,11 +698,53 @@ func enemydrive():
 	if playerX > 250: #Going left
 		input_dirX = -1
 		
+		if faceY == 0: #Wheels when no Y
+			if input_dirY == 1:
+				turnframe = 20
+			elif input_dirY == -1:
+				turnframe = 10
+			else:
+				turnframe = 0
+		else:
+			if abs(input_dirY) == 1:
+				turnframe = 0
+			else:
+				if faceY == 1:
+					if faceX == 1:
+						turnframe = 20
+					else:
+						turnframe = 10
+				else:
+					if faceX == 1:
+						turnframe = 10
+					else:
+						turnframe = 20
 		
 		
 	elif playerX < -250: #Going right
 		input_dirX = 1
 		
+		if faceY == 0: #Wheels when no Y
+			if input_dirY == 1:
+				turnframe = 20
+			elif input_dirY == -1:
+				turnframe = 10
+			else:
+				turnframe = 0
+		else:
+			if abs(input_dirY) == 1:
+				turnframe = 0
+			else:
+				if faceY == 1:
+					if faceX == 1:
+						turnframe = 10
+					else:
+						turnframe = 20
+				else:
+					if faceX == 1:
+						turnframe = 20
+					else:
+						turnframe = 10
 		
 		
 	else:
@@ -972,10 +756,44 @@ func enemydrive():
 	if playerY > 50: #Going up
 		input_dirY = -1
 		
+		if faceX == 0: #Wheels when no X
+			set_flipped(false)
+			if input_dirX == 1:
+				if faceY == 1:
+					turnframe = 20
+				else:
+					turnframe = 10
+			elif input_dirX == -1:
+				if faceY == 1:
+					turnframe = 10
+				else:
+					turnframe = 20
+			else:
+				turnframe = 0
+		else:
+			if input_dirX == 0:
+				turnframe = 10
 		
 	elif playerY < -50: #Going down
 		input_dirY = 1
 		
+		if faceX == 0: #Wheels when no X
+			set_flipped(false)
+			if input_dirX == 1:
+				if faceY == 1:
+					turnframe = 10
+				else:
+					turnframe = 20
+			elif input_dirX == -1:
+				if faceY == 1:
+					turnframe = 20
+				else:
+					turnframe = 10
+			else:
+				turnframe = 0
+		else:
+			if input_dirX == 0:
+				turnframe = 20
 		
 	else:
 		if abs(motion.y) > 50:
@@ -984,12 +802,90 @@ func enemydrive():
 			input_dirY = 0
 
 
+	## Input & motion logic ##
+	if input_dirY == 0: 
+		if faceY == 0:
+			motion.y = lerp(motion.y,0,0.005) #De-accel Y when no Y inputs
+		else:
+			if faceX == 0:
+				motion.y = lerp(motion.y,0,0.004)
+			else:
+				motion.y = lerp(motion.y,0,0.002)
+	else:
+		if faceY != 0:
+			if input_dirY == faceY:
+				motion.y += (0.375*input_dirY)*8 #Accel when speeding in facing direction
+			elif motion_dirY == faceY:
+				motion.y = lerp(motion.y,0,0.020) #De-accel Y when breaking
+			else:
+				motion.y += (0.26*input_dirY)*8 #Otherwise reversing speed
+		else:
+			motion.y += (input_dirY*abs(motion.x)/1000)*8
+			motion.y = lerp(motion.y,0,0.004)
 
+	if input_dirX == 0:
+		if faceX == 0:
+			motion.x = lerp(motion.x,0,0.010) #De-accel X when no X inputs
+		else:
+			if faceY == 0:
+				motion.x = lerp(motion.x,0,0.002)
+			else:
+				motion.x = lerp(motion.x,0,0.001)
+	else:
+		if faceX != 0:
+			if input_dirX == faceX:
+				motion.x += (input_dirX)*8 #Accel when speeding in facing direction
+			elif motion_dirX == faceX:
+				motion.x = lerp(motion.x,0,0.010) #De-accel X when breaking
+			else:
+				motion.x += (0.6*input_dirX)*8  #Otherwise reversing speed
+		else:
+			motion.x += (input_dirX*abs(motion.y)/500)*8
+			motion.x = lerp(motion.x,0,0.002)
 
 	if abs(motion.x) < 90 && abs(motion.y) < 45:
 		if abs(playerX) < 400:
 			Driver.scale = Vector2(0,0)
 			shootman()
+
+
+	
+	# Driver's sprite logic
+	Driver.visible = 1
+	Driver.position = drivepos
+	Driver.scale.x = driveface
+	
+	if faceX != 0:
+		driveface = faceX
+		
+		if faceY == 0:
+			Driver.frame = 70 # -> sideways
+			if faceX == 1:
+				drivepos = Vector2(-6,-50)
+			else:
+				drivepos = Vector2(7,-49)
+		else:
+			if faceY == -1:
+				Driver.frame = 72 # ¨| diag-up
+				if faceX == 1:
+					drivepos = Vector2(-7,-55)
+				else:
+					drivepos = Vector2(-31,-53)
+			if faceY == 1:
+				Driver.frame = 71 # _| diag-down
+				if faceX == 1:
+					drivepos = Vector2(-1,-55)
+				else:
+					drivepos = Vector2(25,-54)
+		
+	else:
+		driveface = 1
+		if faceY == 1:
+			Driver.frame = 73 # \/ down
+			drivepos = Vector2(14,-63)
+		else:
+			Driver.frame = 74 # /\ up
+			drivepos = Vector2(-19,-60)
 
 const DORTOR = preload("res://entities/dortor.tscn")
 
