@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/drok.wav-bf1ea3a2be1c1c27aab6a6ca260bd34c.sample"
+
+[deps]
+
+source_file="res://media/musica/drok.wav"
+dest_files=[ "res://.import/drok.wav-bf1ea3a2be1c1c27aab6a6ca260bd34c.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

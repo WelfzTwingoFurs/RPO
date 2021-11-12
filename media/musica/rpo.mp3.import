@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/rpo.mp3-120f86f9c174f963a56b87c4f42548e0.mp3str"
+
+[deps]
+
+source_file="res://media/musica/rpo.mp3"
+dest_files=[ "res://.import/rpo.mp3-120f86f9c174f963a56b87c4f42548e0.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

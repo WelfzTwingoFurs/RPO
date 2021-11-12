@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/slyTwo.wav-21412ce4c05433d93ad0fcb26d4da4f2.sample"
+
+[deps]
+
+source_file="res://media/musica/slyTwo.wav"
+dest_files=[ "res://.import/slyTwo.wav-21412ce4c05433d93ad0fcb26d4da4f2.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

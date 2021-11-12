@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/rposong.mp3-208e9472d502ad19f78a9e5256e32b81.mp3str"
+
+[deps]
+
+source_file="res://media/musica/Nova pasta/rposong.mp3"
+dest_files=[ "res://.import/rposong.mp3-208e9472d502ad19f78a9e5256e32b81.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

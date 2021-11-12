@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/rush-desertwalk.wav-82dc26a476a8ecf1a777fb9d8f0e27e1.sample"
+
+[deps]
+
+source_file="res://media/musica/rush-desertwalk.wav"
+dest_files=[ "res://.import/rush-desertwalk.wav-82dc26a476a8ecf1a777fb9d8f0e27e1.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

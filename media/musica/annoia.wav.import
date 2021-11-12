@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/annoia.wav-f394f30f2211e3b8f91ae7118c609516.sample"
+
+[deps]
+
+source_file="res://media/musica/annoia.wav"
+dest_files=[ "res://.import/annoia.wav-f394f30f2211e3b8f91ae7118c609516.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0
