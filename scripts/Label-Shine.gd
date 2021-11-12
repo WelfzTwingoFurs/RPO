@@ -13,7 +13,7 @@ func _ready():
 	if shinetype == 2:
 		label.rect_scale.y = 25
 
-func _process(delta):
+func _process(_delta):
 	if shinetype == 1:
 		meganumbers = abs(sin(OS.get_system_time_msecs() / 200))
 		supernumbers = sin((OS.get_system_time_msecs() / 50 ))

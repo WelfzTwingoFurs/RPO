@@ -2,8 +2,6 @@ extends Node
 
 var debugging = 1
 
-var playerX
-var playerY
 var player
 
 var minX = 0
@@ -14,7 +12,17 @@ var maxY = 246
 
 var foes = 0
 var friends = 0
+var npcs = 0
 
+var lane1
+var lane2
+
+var point_of_interest = Vector2(INF,INF)
+
+# 0 = forget it, 1 = attack, 2 = death, 3 = scream/grunt, 4 = item
+var interest_type = 0
+
+## Resolution stuff below, debugging keys lower ##
 var WindowX
 var WindowY
 
@@ -23,11 +31,13 @@ onready var resolution = 2
 
 var smelly
 
+
+
 func _ready():
 	smelly = OS.get_screen_size()
 
 
-func _process(delta):
+func _process(_delta):
 	WindowX = OS.window_size.x
 	WindowY = OS.window_size.y
 	
@@ -59,10 +69,13 @@ func _process(delta):
 		OS.center_window() # Window res*2
 		
 		step = 3
-		player.hudconfig()
+		if player != null:
+			player.hudconfig()
 		
 
-
+	
+	# Debugging commands below #
+	
 	else:
 		if Input.is_action_just_pressed("bug_resdivide"): # 1
 			OS.window_size /= 2
@@ -89,6 +102,9 @@ func _process(delta):
 		if Input.is_action_just_pressed("bug_reset"): #5
 			foes = 0
 			friends = 0
+			npcs = 0
+			point_of_interest = Vector2(INF,INF)
+			interest_type = 0
 			Engine.time_scale = 1
 			get_tree().reload_current_scene()
 		
@@ -114,6 +130,10 @@ func _process(delta):
 		
 		elif Input.is_action_just_pressed("bug_speedres"):
 			Engine.time_scale = 1
-	
-	
+		
+		elif Input.is_action_just_pressed("bug_speedstop"):
+			Engine.time_scale = 0
+		
+		if Input.is_action_just_pressed("bug_level_select"):
+			get_tree().change_scene("res://scenes/level-select.tscn")
 	
