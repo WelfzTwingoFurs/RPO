@@ -11,9 +11,15 @@ config_version=4
 [application]
 
 config/name="RPO - Revolta Pelo Obvio!"
-run/main_scene="res://Node2D.tscn"
+config/description="THE YEAR IS 202X AND YOU'VE TAKEN THE JOKE TOO FAR. YOU DID, ACTUALLY, GO TO BRAZIL"
+run/main_scene="res://scenes/level-select.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="RPO"
 boot_splash/image="res://boot.png"
-config/icon="res://icon.png"
+config/icon="res://icon64-trans.png"
+config/macos_native_icon="res://icondoticns.icns"
+config/windows_native_icon="res://game.ico"
+config/quit_on_go_back=false
 
 [autoload]
 
@@ -24,9 +30,31 @@ Global="*res://scripts/resolution.gd"
 window/size/width=400
 window/size/height=400
 window/vsync/use_vsync=false
-window/energy_saving/keep_screen_on=false
 window/stretch/mode="viewport"
 window/stretch/aspect="expand"
+
+[importer_defaults]
+
+texture={
+"compress/bptc_ldr": 0,
+"compress/hdr_mode": 0,
+"compress/lossy_quality": 0.7,
+"compress/mode": 0,
+"compress/normal_map": 0,
+"detect_3d": false,
+"flags/anisotropic": false,
+"flags/filter": false,
+"flags/mipmaps": false,
+"flags/repeat": 0,
+"flags/srgb": 2,
+"process/HDR_as_SRGB": false,
+"process/fix_alpha_border": true,
+"process/invert_color": false,
+"process/premult_alpha": false,
+"size_limit": 0,
+"stream": false,
+"svg/scale": 1.0
+}
 
 [input]
 
@@ -126,6 +154,26 @@ M={
 "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":77,"unicode":0,"echo":false,"script":null)
  ]
 }
+bug_speedres={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777254,"unicode":0,"echo":false,"script":null)
+ ]
+}
+bug_level_select={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777217,"unicode":0,"echo":false,"script":null)
+ ]
+}
+ply_holster={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777240,"unicode":0,"echo":false,"script":null)
+ ]
+}
+bug_speedstop={
+"deadzone": 0.5,
+"events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777255,"unicode":0,"echo":false,"script":null)
+ ]
+}
 
 [layer_names]
 
@@ -137,6 +185,7 @@ M={
 2d_physics/layer_3="enemies"
 2d_render/layer_4="bullets"
 2d_physics/layer_4="bullets"
+2d_render/layer_20="limit-changer-collider"
 
 [physics]
 
@@ -147,6 +196,7 @@ common/enable_pause_aware_picking=true
 quality/driver/driver_name="GLES2"
 quality/intended_usage/framebuffer_allocation=1
 quality/intended_usage/framebuffer_allocation.mobile=1
+2d/snapping/use_gpu_pixel_snap=true
 vram_compression/import_etc=true
 vram_compression/import_etc2=false
 quality/shadow_atlas/quadrant_0_subdiv=0
@@ -156,8 +206,12 @@ quality/shadow_atlas/quadrant_3_subdiv=0
 quality/shadows/filter_mode=0
 quality/reflections/texture_array_reflections=false
 quality/reflections/high_quality_ggx=false
+quality/shading/force_vertex_shading.mobile=false
+quality/shading/force_lambert_over_burley.mobile=false
+quality/shading/force_blinn_over_ggx.mobile=false
 quality/depth_prepass/enable=false
 quality/filters/anisotropic_filter_level=1
+quality/filters/use_nearest_mipmap_filter=true
 quality/skinning/software_skinning_fallback=false
 quality/spatial_partitioning/use_bvh=false
 quality/lightmapping/use_bicubic_sampling=false
